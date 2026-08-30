@@ -47,7 +47,7 @@ export default function SuppliersPage() {
       phone: '+84 90 123 4567',
       email: 'export@vietnamagri.com',
       balanceUSD: 14500,
-      notes: 'مورد التوابل والفلفل الأسود والبصل الفاخر',
+      notes: 'مورد التوابل والفلفل الأسود والمنتجات الزراعية الفاخرة',
     },
     {
       id: 'sup-3',

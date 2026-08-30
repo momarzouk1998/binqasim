@@ -64,20 +64,20 @@ async function main() {
     },
   });
 
-  const onion = await prisma.item.upsert({
-    where: { id: 'item-basal-01' },
+  const coconutBriq = await prisma.item.upsert({
+    where: { id: 'item-coconut-01' },
     update: {},
     create: {
-      id: 'item-basal-01',
-      nameAr: 'بصل أحمر درجة أولى للتصدير',
-      nameEn: 'Red Onions Export Grade',
-      category: 'خضروات مصدّرة',
+      id: 'item-coconut-01',
+      nameAr: 'قوالب فحم جوز الهند المضغوط (إندونيسي)',
+      nameEn: 'Coconut Charcoal Briquettes',
+      category: 'فحم مضغوط',
       unit: 'TON',
       weightPerUnitKg: 1000,
-      volumePerUnitM3: 1.4,
-      basePriceUSD: 380,
-      priceEGP: 22000,
-      priceOMR: 160,
+      volumePerUnitM3: 1.5,
+      basePriceUSD: 520,
+      priceEGP: 31000,
+      priceOMR: 215,
       stockQuantity: 85,
     },
   });
@@ -221,7 +221,7 @@ async function main() {
       totalVolumeM3: 68,
       totalFreightCostUSD: 3200,
       salesTaxPercent: 14,
-      notes: 'حاوية فحم 50 متر مكعب + بصل 18 متر مكعب قادمة من ميناء جاكرتا إلى ميناء الإسكندرية',
+      notes: 'حاوية فحم 50 متر مكعب + فحم مضغوط 18 متر مكعب قادمة من ميناء جاكرتا إلى ميناء الإسكندرية',
       items: {
         create: [
           {
@@ -236,13 +236,13 @@ async function main() {
             landedCostLocal: 27005, // EGP landed per ton
           },
           {
-            itemId: onion.id,
+            itemId: coconutBriq.id,
             quantityWeight: 12, // 12 Tons
             volumeM3: 18, // 18 m3 volume
-            purchasePriceUSD: 360,
-            customsTariffPerKgEGP: 15,
-            directCostUSD: 4320,
-            indirectCostUSD: 1850,
+            purchasePriceUSD: 520,
+            customsTariffPerKgEGP: 12,
+            directCostUSD: 6240,
+            indirectCostUSD: 2150,
             landedCostUSD: 514.1,
             landedCostLocal: 24935,
           },

@@ -30,11 +30,11 @@ export default function ImportShipmentsPage() {
     },
     {
       id: 2,
-      name: 'بصل أحمر درجة أولى للتصدير',
+      name: 'قوالب فحم جوز الهند المضغوط (إندونيسي)',
       quantityTons: 12,
       volumeM3: 18,
-      purchasePriceUSDPerTon: 360,
-      customsTariffPerKgEGP: 15,
+      purchasePriceUSDPerTon: 520,
+      customsTariffPerKgEGP: 12,
     },
   ]);
 

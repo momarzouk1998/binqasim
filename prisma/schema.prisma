@@ -64,7 +64,7 @@ model Item {
   id                 String   @id @default(uuid())
   nameAr             String
   nameEn             String?
-  category           String   // e.g. "فحم", "بصل", "توابل"
+  category           String   // e.g. "فحم", "فحم مضغوط", "توابل"
   unit               String   // "KG", "TON", "M3"
   weightPerUnitKg    Float    @default(1.0)
   volumePerUnitM3    Float    @default(0.001)

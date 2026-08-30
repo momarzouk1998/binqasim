@@ -103,17 +103,17 @@ export default function FinanceReportsPage() {
     },
     {
       id: 'p2',
-      name: 'بصل أحمر درجة أولى للتصدير',
-      origin: 'مصر (صادر عُمان)',
+      name: 'قوالب فحم جوز الهند المضغوط (إندونيسي)',
+      origin: 'إندونيسيا',
       unit: 'طن',
       soldQty: 48,
-      purchasePriceUSD: 360,
-      landedCostEGP: 20200,
-      avgSellingPriceEGP: 27500,
-      unitProfitEGP: 7300,
-      marginPercent: 26.5,
-      totalSalesEGP: 1320000,
-      totalProfitEGP: 350400,
+      purchasePriceUSD: 520,
+      landedCostEGP: 30200,
+      avgSellingPriceEGP: 38500,
+      unitProfitEGP: 8300,
+      marginPercent: 21.5,
+      totalSalesEGP: 1848000,
+      totalProfitEGP: 398400,
       profitContribution: 31,
     },
     {
@@ -139,7 +139,7 @@ export default function FinanceReportsPage() {
       containerCode: 'CONT-68M3-INDO-2026',
       origin: 'إندونيسيا (Jakarta)',
       volumeUsed: '68 / 68 m³ (100%)',
-      itemsCount: '25 طن فحم + 12 طن بصل',
+      itemsCount: '25 طن فحم طبيعي + 12 طن فحم مضغوط',
       totalLandedCostEGP: 1420000,
       realizedSalesEGP: 1890000,
       netProfitEGP: 470000,
@@ -514,9 +514,9 @@ export default function FinanceReportsPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 pr-4">
-                  <span>• مبيعات البصل الأحمر الصادر</span>
+                  <span>• مبيعات فحم جوز الهند المضغوط</span>
                   <span className="font-mono font-bold">
-                    {Math.round(convertAmount(1320000)).toLocaleString()} {currencySymbol}
+                    {Math.round(convertAmount(1848000)).toLocaleString()} {currencySymbol}
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 pr-4">
