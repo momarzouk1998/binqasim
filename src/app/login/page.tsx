@@ -8,7 +8,7 @@ import { Phone, Lock, LogIn, ShieldCheck, CheckCircle2, UserCheck, AlertCircle }
 export default function LoginPage() {
   const router = useRouter();
   const [phone, setPhone] = useState('01111189666');
-  const [password, setPassword] = useState('123');
+  const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
   const selectAccount = (accPhone: string) => {
     setPhone(accPhone);
-    setPassword('123');
+    setPassword('123456');
     setError('');
   };
 
