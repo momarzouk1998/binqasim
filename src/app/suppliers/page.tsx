@@ -37,7 +37,7 @@ export default function SuppliersPage() {
       phone: '+62 812 9876 5432',
       email: 'sales@nusantara-export.co.id',
       balanceUSD: 22000,
-      notes: 'مورد الفحم الطبيعي الفاخر للشيشة والشواء',
+      notes: 'مورد الفحم الطبيعي الفاخر والشواء',
     },
     {
       id: 'sup-2',

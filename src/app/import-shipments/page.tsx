@@ -22,7 +22,7 @@ export default function ImportShipmentsPage() {
   const [items, setItems] = useState([
     {
       id: 1,
-      name: 'فحم طبيعي فاخر للشيشة والشواء',
+      name: 'فحم طبيعي فاخر والشواء',
       quantityTons: 25,
       volumeM3: 50,
       purchasePriceUSDPerTon: 420,

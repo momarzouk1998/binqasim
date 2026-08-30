@@ -51,7 +51,7 @@ async function main() {
     update: {},
     create: {
       id: 'item-fahm-01',
-      nameAr: 'فحم طبيعي فاخر للشيشة والشواء (درجة أولى)',
+      nameAr: 'فحم طبيعي فاخر والشواء (درجة أولى)',
       nameEn: 'Premium Charcoal',
       category: 'فحم',
       unit: 'TON',
