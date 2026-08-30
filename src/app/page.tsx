@@ -75,7 +75,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="glass-panel p-5 glass-panel-hover">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500">تكلفة مخزون الفحم والتوابل</span>
+              <span className="text-xs font-bold text-slate-500">تكلفة مخزون الفحم (طبيعي ومضغوط)</span>
               <div className="p-2 rounded-xl bg-sky-50 text-sky-600">
                 <Boxes size={20} />
               </div>

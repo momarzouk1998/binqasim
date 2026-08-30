@@ -82,21 +82,21 @@ async function main() {
     },
   });
 
-  const spices = await prisma.item.upsert({
-    where: { id: 'item-tawabel-01' },
+  const vietnamCharcoal = await prisma.item.upsert({
+    where: { id: 'item-vn-charcoal-01' },
     update: {},
     create: {
-      id: 'item-tawabel-01',
-      nameAr: 'توابل وفلفل أسود فاخر (فيتنامي)',
-      nameEn: 'Vietnamese Black Pepper',
-      category: 'توابل واستيراد',
-      unit: 'KG',
-      weightPerUnitKg: 1,
-      volumePerUnitM3: 0.002,
-      basePriceUSD: 4.8,
-      priceEGP: 280,
-      priceOMR: 2.1,
-      stockQuantity: 4500,
+      id: 'item-vn-charcoal-01',
+      nameAr: 'فحم نباتي مضغوط للمشاوي (فيتنامي)',
+      nameEn: 'Vietnam Sawdust Charcoal Briquettes',
+      category: 'فحم مضغوط',
+      unit: 'TON',
+      weightPerUnitKg: 1000,
+      volumePerUnitM3: 1.4,
+      basePriceUSD: 480,
+      priceEGP: 28500,
+      priceOMR: 205,
+      stockQuantity: 45,
     },
   });
 
@@ -106,10 +106,10 @@ async function main() {
     update: {},
     create: {
       id: 'sup-vietnam-01',
-      name: 'Vietnam Agri-Export Co.',
+      name: 'Vietnam Charcoal & Briquette Export Corp',
       country: 'Vietnam',
       phone: '+84 90 123 4567',
-      email: 'export@vietnamagri.com',
+      email: 'export@vietnamcharcoal.com',
       balanceUSD: 14500,
     },
   });
@@ -119,10 +119,10 @@ async function main() {
     update: {},
     create: {
       id: 'sup-indo-01',
-      name: 'PT Nusantara Charcoal & Spices',
+      name: 'PT Nusantara Charcoal Export Indonesia',
       country: 'Indonesia',
       phone: '+62 812 9876 5432',
-      email: 'sales@nusantara-export.co.id',
+      email: 'sales@nusantara-charcoal.co.id',
       balanceUSD: 22000,
     },
   });

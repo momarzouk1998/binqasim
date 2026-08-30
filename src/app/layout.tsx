@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'شركة بي قاسم للاستيراد والتصدير والتوزيع',
-  description: 'نظام إدارة الاستيراد والتصدير، حساب شحنات الفحم والتوابل، وحركة السيارات والتكاليف',
+  description: 'نظام إدارة استيراد وتوزيع الفحم',
   icons: {
     icon: '/logo.png',
   },

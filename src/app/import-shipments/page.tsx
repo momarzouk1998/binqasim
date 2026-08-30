@@ -213,7 +213,7 @@ export default function ImportShipmentsPage() {
                 required
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
-                placeholder="اسم الصنف (مثال: توابل وفلفل أسود)..."
+                placeholder="اسم صنف الفحم (مثال: فحم نباتي مضغوط)..."
                 className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-800 focus:outline-none focus:border-amber-500"
               />
             </div>

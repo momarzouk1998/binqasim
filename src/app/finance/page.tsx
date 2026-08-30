@@ -118,17 +118,17 @@ export default function FinanceReportsPage() {
     },
     {
       id: 'p3',
-      name: 'توابل وفلفل أسود فاخر (فيتنامي)',
+      name: 'فحم نباتي مضغوط للمشاوي (فيتنامي)',
       origin: 'فيتنام',
-      unit: 'كجم',
-      soldQty: 2200,
-      purchasePriceUSD: 4.8,
-      landedCostEGP: 275,
-      avgSellingPriceEGP: 340,
-      unitProfitEGP: 65,
-      marginPercent: 19.1,
-      totalSalesEGP: 748000,
-      totalProfitEGP: 143000,
+      unit: 'طن',
+      soldQty: 25,
+      purchasePriceUSD: 480,
+      landedCostEGP: 28500,
+      avgSellingPriceEGP: 35000,
+      unitProfitEGP: 6500,
+      marginPercent: 18.6,
+      totalSalesEGP: 875000,
+      totalProfitEGP: 162500,
       profitContribution: 12,
     },
   ];
@@ -150,7 +150,7 @@ export default function FinanceReportsPage() {
       containerCode: 'CONT-68M3-VN-2026',
       origin: 'فيتنام (Ho Chi Minh)',
       volumeUsed: '62 / 68 m³ (91%)',
-      itemsCount: '4.5 طن توابل + 20 طن فحم',
+      itemsCount: '25 طن فحم نباتي مضغوط + 15 طن فحم شواء',
       totalLandedCostEGP: 1280000,
       realizedSalesEGP: 1690000,
       netProfitEGP: 410000,
@@ -520,9 +520,9 @@ export default function FinanceReportsPage() {
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-600 pr-4">
-                  <span>• مبيعات التوابل والفلفل الأسود</span>
+                  <span>• مبيعات الفحم النباتي المضغوط (فيتنامي)</span>
                   <span className="font-mono font-bold">
-                    {Math.round(convertAmount(748000)).toLocaleString()} {currencySymbol}
+                    {Math.round(convertAmount(875000)).toLocaleString()} {currencySymbol}
                   </span>
                 </div>
               </div>

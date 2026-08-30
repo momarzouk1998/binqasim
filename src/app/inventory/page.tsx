@@ -32,14 +32,14 @@ export default function InventoryPage() {
     },
     {
       id: 'item-3',
-      nameAr: 'توابل وفلفل أسود فاخر (فيتنامي)',
-      nameEn: 'Vietnamese Black Pepper',
-      category: 'توابل واستيراد',
-      unit: 'KG',
-      basePriceUSD: 4.8,
-      priceEGP: 280,
-      priceOMR: 2.1,
-      stockQuantity: 4500,
+      nameAr: 'فحم نباتي مضغوط للمشاوي (فيتنامي)',
+      nameEn: 'Vietnam Sawdust Charcoal Briquettes',
+      category: 'فحم مضغوط',
+      unit: 'TON',
+      basePriceUSD: 480,
+      priceEGP: 28500,
+      priceOMR: 205,
+      stockQuantity: 45,
     },
   ]);
 

@@ -31,23 +31,23 @@ export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState([
     {
       id: 'sup-1',
-      name: 'PT Nusantara Charcoal & Spices',
+      name: 'PT Nusantara Charcoal Export Indonesia',
       country: 'إندونيسيا (Indonesia)',
       countryCode: 'ID',
       phone: '+62 812 9876 5432',
-      email: 'sales@nusantara-export.co.id',
+      email: 'sales@nusantara-charcoal.co.id',
       balanceUSD: 22000,
-      notes: 'مورد الفحم الطبيعي الفاخر والشواء',
+      notes: 'مورد الفحم الطبيعي الفاخر وفحم جوز الهند',
     },
     {
       id: 'sup-2',
-      name: 'Vietnam Agri-Export Corporation',
+      name: 'Vietnam Charcoal & Briquette Export Corp',
       country: 'فيتنام (Vietnam)',
       countryCode: 'VN',
       phone: '+84 90 123 4567',
-      email: 'export@vietnamagri.com',
+      email: 'export@vietnamcharcoal.com',
       balanceUSD: 14500,
-      notes: 'مورد التوابل والفلفل الأسود والمنتجات الزراعية الفاخرة',
+      notes: 'مورد الفحم النباتي المضغوط وفحم الشواء الفيتنامي',
     },
     {
       id: 'sup-3',
@@ -58,28 +58,28 @@ export default function SuppliersPage() {
       email: 'info@nilepack.com',
       balanceUSD: 0,
       balanceEGP: 38000,
-      notes: 'مورد كراتين التعبئة والتغليف للصادر والوارد',
+      notes: 'مورد كراتين وشكاير تعبئة الفحم للتصدير والتوزيع',
     },
   ]);
 
   const [payments, setPayments] = useState([
     {
       id: 'pay-sup-1',
-      supplierName: 'PT Nusantara Charcoal & Spices',
+      supplierName: 'PT Nusantara Charcoal Export Indonesia',
       date: '2026-08-25',
       amountUSD: 15000,
       paymentMethod: 'تحويل بنكي دولي (LC / TT)',
       bankName: 'البنك الأهلي المصري - فرع الدولار',
-      notes: 'دفعة سداد فاتورة الحاوية CONT-68M3-INDO-2026',
+      notes: 'دفعة سداد فاتورة حاوية الفحم الطبيعي CONT-68M3-INDO-2026',
     },
     {
       id: 'pay-sup-2',
-      supplierName: 'Vietnam Agri-Export Corporation',
+      supplierName: 'Vietnam Charcoal & Briquette Export Corp',
       date: '2026-08-20',
       amountUSD: 8000,
       paymentMethod: 'تحويل بنكي دولي (TT)',
       bankName: 'بنك مسقط (Muscat Bank)',
-      notes: 'تحويل دولار من حساب عمان',
+      notes: 'تحويل دولار لسداد شحنة الفحم المضغوط',
     },
   ]);
 
@@ -97,7 +97,7 @@ export default function SuppliersPage() {
     },
     {
       id: 'chk-2',
-      supplierName: 'PT Nusantara Charcoal & Spices',
+      supplierName: 'PT Nusantara Charcoal Export Indonesia',
       checkNumber: 'LC-BANK-7721',
       bankName: 'بنك قطر الوطني QNB',
       amount: 10000,
