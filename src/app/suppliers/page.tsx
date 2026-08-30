@@ -37,7 +37,7 @@ export default function SuppliersPage() {
       phone: '+62 812 9876 5432',
       email: 'sales@nusantara-export.co.id',
       balanceUSD: 22000,
-      notes: 'مورد فحم الفحم الطبيعي للشيشة والشواء',
+      notes: 'مورد الفحم الطبيعي الفاخر للشيشة والشواء',
     },
     {
       id: 'sup-2',
@@ -47,7 +47,7 @@ export default function SuppliersPage() {
       phone: '+84 90 123 4567',
       email: 'export@vietnamagri.com',
       balanceUSD: 14500,
-      notes: 'مورد التوابل والفلفل الأسود والبصل الاصطناعي',
+      notes: 'مورد التوابل والفلفل الأسود والبصل الفاخر',
     },
     {
       id: 'sup-3',

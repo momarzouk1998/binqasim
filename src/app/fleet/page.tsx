@@ -162,7 +162,7 @@ export default function FleetPage() {
               <AlertTriangle className="text-rose-600" size={24} />
               <div>
                 <h4 className="font-extrabold text-sm text-rose-800">
-                  تنبيه هائم: سيارة تجاوزت 1,500 كم وبحاجة لتغيير الزيت فوراً!
+                  تنبيه هام: سيارة تجاوزت 1,500 كم وبحاجة لتغيير الزيت فوراً!
                 </h4>
                 <p className="text-xs text-rose-600 mt-0.5">
                   يرجى تغيير زيت الفلتر والمحرك للحفاظ على كفاءة سيارات التوزيع.

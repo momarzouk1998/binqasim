@@ -53,7 +53,7 @@ export default function CustomersPage() {
       currency: 'OMR',
       balance: 2850,
       address: 'مطرح، مسقط - سلطنة عمان',
-      routeDays: ['الأحد', 'الاربعاء'],
+      routeDays: ['الأحد', 'الأربعاء'],
     },
     {
       id: 'c3',
