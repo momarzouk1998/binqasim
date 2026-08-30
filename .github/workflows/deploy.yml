@@ -1,0 +1,84 @@
+name: Deploy to Server
+
+on:
+  workflow_run:
+    workflows: ["Build & Push to GHCR"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy via SSH
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 10m
+          script: |
+            set -e
+
+            GHCR_IMAGE="ghcr.io/momarzouk1998/binqasim:latest"
+            LOCAL_IMAGE="binqasim:latest"
+            HOST_PORT=3030
+            APP_PORT=3030
+            SERVICE_NAME="binqasim"
+
+            GH_USER="${{ github.actor }}"
+            GH_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+            echo "=== [1/7] Logging in to GHCR ==="
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GH_USER" --password-stdin
+
+            echo "=== [2/7] Pulling latest image from GHCR ==="
+            docker pull "$GHCR_IMAGE"
+
+            echo "=== [3/7] Tagging local image ==="
+            docker tag "$GHCR_IMAGE" "$LOCAL_IMAGE"
+
+            echo "=== [4/7] Ensure env file exists ==="
+            ENV_FILE=/opt/binqasim/.env
+            mkdir -p /opt/binqasim
+
+            if [ ! -f "$ENV_FILE" ]; then
+              echo "DATABASE_URL=\"postgresql://binqasim:BinQasim2026!SecureDb@localhost:5432/binqasim?schema=public\"" > "$ENV_FILE"
+              echo "PORT=3030" >> "$ENV_FILE"
+              echo "NODE_ENV=production" >> "$ENV_FILE"
+            fi
+
+            echo "=== [5/7] Deploying Container / Service ==="
+            if docker service inspect $SERVICE_NAME >/dev/null 2>&1; then
+              echo "  Updating swarm service"
+              docker service update --image "$LOCAL_IMAGE" --force $SERVICE_NAME
+            else
+              echo "  Stopping any existing container named $SERVICE_NAME"
+              docker stop $SERVICE_NAME >/dev/null 2>&1 || true
+              docker rm $SERVICE_NAME >/dev/null 2>&1 || true
+
+              echo "  Starting docker container on port ${HOST_PORT}"
+              docker run -d \
+                --name $SERVICE_NAME \
+                --restart unless-stopped \
+                --network host \
+                --env-file "$ENV_FILE" \
+                -e PORT=${APP_PORT} \
+                "$LOCAL_IMAGE"
+            fi
+
+            echo "=== [6/7] Waiting 10s for container initialization ==="
+            sleep 10
+
+            echo "=== [7/7] Health check on 127.0.0.1:${HOST_PORT} ==="
+            INT_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "http://127.0.0.1:${HOST_PORT}/" || echo "000")
+            echo "HTTP Status Code: $INT_CODE"
+
+            docker image prune -f
+            echo "=== Deployment complete ==="

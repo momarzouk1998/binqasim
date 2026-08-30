@@ -1,0 +1,251 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  ACCOUNTANT
+  BRANCH_MANAGER
+}
+
+enum PaymentType {
+  CASH
+  CREDIT
+  INSTALLMENT
+  CHEQUE
+}
+
+enum ShipmentStatus {
+  ORDERED
+  IN_TRANSIT
+  CUSTOMS_CLEARED
+  IN_WAREHOUSE
+}
+
+enum VehicleStatus {
+  ACTIVE
+  MAINTENANCE_REQUIRED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      Role     @default(ADMIN)
+  branchId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String   // "فرع مصر" | "فرع عمان"
+  code      String   @unique // "EGY" | "OMN"
+  country   String   // "Egypt" | "Oman"
+  currency  String   // "EGP" | "OMR"
+  createdAt DateTime @default(now())
+}
+
+model CurrencyRate {
+  id          String   @id @default(uuid())
+  code        String   @unique // "USD", "EGP", "OMR"
+  rateToUSD   Float    // 1.0 for USD, e.g. 50.0 for EGP, 0.385 for OMR
+  updatedAt   DateTime @updatedAt
+}
+
+model Item {
+  id                 String   @id @default(uuid())
+  nameAr             String
+  nameEn             String?
+  category           String   // e.g. "فحم", "بصل", "توابل"
+  unit               String   // "KG", "TON", "M3"
+  weightPerUnitKg    Float    @default(1.0)
+  volumePerUnitM3    Float    @default(0.001)
+  basePriceUSD       Float    @default(0.0)
+  priceEGP           Float    @default(0.0)
+  priceOMR           Float    @default(0.0)
+  stockQuantity      Float    @default(0.0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  shipmentItems      ImportShipmentItem[]
+  salesItems         SalesInvoiceItem[]
+}
+
+model Supplier {
+  id          String   @id @default(uuid())
+  name        String
+  country     String   // Vietnam, Indonesia, etc.
+  phone       String?
+  email       String?
+  balanceUSD  Float    @default(0.0)
+  createdAt   DateTime @default(now())
+
+  shipments   ImportShipment[]
+}
+
+model ImportShipment {
+  id                  String         @id @default(uuid())
+  containerNo         String         @unique // e.g. "CONT-68M3-01"
+  originCountry       String         // Vietnam / Indonesia
+  supplierId          String
+  supplier            Supplier       @relation(fields: [supplierId], references: [id])
+  status              ShipmentStatus @default(ORDERED)
+  totalVolumeM3       Float          // e.g. 68 m3
+  totalFreightCostUSD Float          // e.g. 3000 $
+  salesTaxPercent     Float          @default(14.0) // 5% or 14%
+  notes               String?
+  createdAt           DateTime       @default(now())
+
+  items               ImportShipmentItem[]
+}
+
+model ImportShipmentItem {
+  id                   String         @id @default(uuid())
+  shipmentId           String
+  shipment             ImportShipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  itemId               String
+  item                 Item           @relation(fields: [itemId], references: [id])
+  quantityWeight       Float          // Tons or KG
+  volumeM3             Float          // Volume allocated in container
+  purchasePriceUSD     Float          // Direct cost per unit
+  customsTariffPerKgEGP Float         // Customs Tariff per KG
+  directCostUSD        Float          // Purchase price total
+  indirectCostUSD      Float          // Freight + Customs + Sales Tax allocated
+  landedCostUSD        Float          // Final Landed Unit Cost in USD
+  landedCostLocal      Float          // Final Landed Unit Cost in local currency (EGP/OMR)
+}
+
+model Vehicle {
+  id                   String        @id @default(uuid())
+  plateNumber          String        @unique
+  model                String
+  branchCode           String        // "EGY" or "OMN"
+  driverName           String?
+  lastOdometerKm       Float         @default(0.0)
+  lastOilChangeKm      Float         @default(0.0)
+  nextOilChangeAlertKm Float         @default(1500.0) // Alarm every 1500 KM
+  status               VehicleStatus @default(ACTIVE)
+  createdAt            DateTime      @default(now())
+
+  odometerLogs         OdometerLog[]
+  maintenanceLogs      MaintenanceLog[]
+}
+
+model OdometerLog {
+  id         String   @id @default(uuid())
+  vehicleId  String
+  vehicle    Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  driverName String
+  tripDate   DateTime @default(now())
+  startKm    Float
+  endKm      Float
+  distanceKm Float
+  fuelCost   Float
+  costPerKm  Float
+  notes      String?
+}
+
+model MaintenanceLog {
+  id          String   @id @default(uuid())
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  serviceType String   // "تغيير زيت", "تغيير فلاتر", "صيانة دورية"
+  serviceKm   Float
+  cost        Float
+  servicedAt  DateTime @default(now())
+  notes       String?
+}
+
+model Customer {
+  id           String   @id @default(uuid())
+  name         String
+  phone        String?
+  branchCode   String   // "EGY" or "OMN"
+  balanceLocal Float    @default(0.0)
+  createdAt    DateTime @default(now())
+
+  salesInvoices SalesInvoice[]
+}
+
+model SalesInvoice {
+  id              String      @id @default(uuid())
+  invoiceNumber   String      @unique
+  customerId      String
+  customer        Customer    @relation(fields: [customerId], references: [id])
+  branchCode      String      // "EGY" or "OMN"
+  currency        String      // "EGP" or "OMR"
+  paymentType     PaymentType @default(CASH)
+  totalAmount     Float
+  paidAmount      Float
+  remainingAmount Float
+  createdAt       DateTime    @default(now())
+
+  items           SalesInvoiceItem[]
+  installments    Installment[]
+  cheques         Cheque[]
+}
+
+model SalesInvoiceItem {
+  id          String       @id @default(uuid())
+  invoiceId   String
+  invoice     SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  itemId      String
+  item        Item         @relation(fields: [itemId], references: [id])
+  quantity    Float
+  unitPrice   Float
+  totalPrice  Float
+}
+
+model Installment {
+  id            String       @id @default(uuid())
+  invoiceId     String
+  invoice       SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  dueDate       DateTime
+  amount        Float
+  status        String       // "PENDING", "PAID"
+  paidAt        DateTime?
+}
+
+model Cheque {
+  id            String       @id @default(uuid())
+  invoiceId     String
+  invoice       SalesInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  chequeNumber  String
+  bankName      String
+  dueDate       DateTime
+  amount        Float
+  status        String       // "PENDING", "CLEARED", "BOUNCED"
+}
+
+model Employee {
+  id         String   @id @default(uuid())
+  name       String
+  branchCode String   // "EGY" or "OMN"
+  jobTitle   String
+  phone      String?
+  baseSalary Float
+  hireDate   DateTime @default(now())
+
+  payrolls   Payroll[]
+}
+
+model Payroll {
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  month      Int
+  year       Int
+  baseSalary Float
+  allowances Float    @default(0.0)
+  deductions Float    @default(0.0)
+  netSalary  Float
+  status     String   @default("PAID") // "PAID", "PENDING"
+  paidAt     DateTime @default(now())
+}
