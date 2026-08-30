@@ -22,7 +22,7 @@ export default function ImportShipmentsPage() {
   const [items, setItems] = useState([
     {
       id: 1,
-      name: 'فحم فحم طبيعي للشيشة والشواء',
+      name: 'فحم طبيعي فاخر للشيشة والشواء',
       quantityTons: 25,
       volumeM3: 50,
       purchasePriceUSDPerTon: 420,
@@ -165,7 +165,7 @@ export default function ImportShipmentsPage() {
             </div>
 
             <div>
-              <label className="block text-slate-600 mb-1 font-bold">حجم الحاوية (m³)</label>
+              <label className="block text-slate-600 mb-1 font-bold">حجم الحاوية الإجمالي (متر مكعب m³)</label>
               <input
                 type="number"
                 value={totalVolumeM3}

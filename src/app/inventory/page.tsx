@@ -10,7 +10,7 @@ export default function InventoryPage() {
   const [items] = useState([
     {
       id: 'item-1',
-      nameAr: 'فحم طبيعي للشيشة والشواء (درجة أولى)',
+      nameAr: 'فحم طبيعي فاخر للشيشة والشواء (درجة أولى)',
       nameEn: 'Premium Charcoal',
       category: 'فحم',
       unit: 'TON',
