@@ -276,7 +276,32 @@ async function main() {
     },
   });
 
-  console.log('Database seeded successfully!');
+  // 9. Primary System Users (Phone authentication)
+  await prisma.user.upsert({
+    where: { phone: '01111189666' },
+    update: { name: 'وائل قاسم', title: 'المدير' },
+    create: {
+      phone: '01111189666',
+      name: 'وائل قاسم',
+      title: 'المدير',
+      password: '123', // default pin/pass
+      role: 'ADMIN',
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { phone: '01558282760' },
+    update: { name: 'openappo', title: 'مدير عام' },
+    create: {
+      phone: '01558282760',
+      name: 'openappo',
+      title: 'مدير عام',
+      password: '123',
+      role: 'ADMIN',
+    },
+  });
+
+  console.log('Database seeded successfully with primary users (01111189666 & 01558282760)!');
 }
 
 main()
