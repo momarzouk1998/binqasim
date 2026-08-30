@@ -10,12 +10,7 @@ import {
   Search,
   ArrowUpRight,
   Globe2,
-  DollarSign,
-  Phone,
-  Mail,
-  Calendar,
-  AlertCircle,
-  CheckCircle
+  DollarSign
 } from 'lucide-react';
 
 const TABS = [
@@ -33,7 +28,6 @@ export default function SuppliersPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  // Mock Suppliers Data (Import & Local Suppliers)
   const [suppliers, setSuppliers] = useState([
     {
       id: 'sup-1',
@@ -42,7 +36,7 @@ export default function SuppliersPage() {
       countryCode: 'ID',
       phone: '+62 812 9876 5432',
       email: 'sales@nusantara-export.co.id',
-      balanceUSD: 22000, // We owe them $22,000
+      balanceUSD: 22000,
       notes: 'مورد فحم الفحم الطبيعي للشيشة والشواء',
     },
     {
@@ -52,7 +46,7 @@ export default function SuppliersPage() {
       countryCode: 'VN',
       phone: '+84 90 123 4567',
       email: 'export@vietnamagri.com',
-      balanceUSD: 14500, // We owe them $14,500
+      balanceUSD: 14500,
       notes: 'مورد التوابل والفلفل الأسود والبصل الاصطناعي',
     },
     {
@@ -62,13 +56,12 @@ export default function SuppliersPage() {
       country: 'مصر (Egypt)',
       countryCode: 'EG',
       email: 'info@nilepack.com',
-      balanceUSD: 0, // Local supplier paid in EGP
+      balanceUSD: 0,
       balanceEGP: 38000,
       notes: 'مورد كراتين التعبئة والتغليف للصادر والوارد',
     },
   ]);
 
-  // Mock Supplier Payments Data
   const [payments, setPayments] = useState([
     {
       id: 'pay-sup-1',
@@ -90,8 +83,7 @@ export default function SuppliersPage() {
     },
   ]);
 
-  // Mock Checks Data
-  const [checks, setChecks] = useState([
+  const [checks] = useState([
     {
       id: 'chk-1',
       supplierName: 'شركة النيل للكرتون والتغليف',
@@ -101,7 +93,7 @@ export default function SuppliersPage() {
       currency: 'EGP',
       issueDate: '2026-08-15',
       dueDate: '2026-09-15',
-      status: 'PENDING', // PENDING, CLEARED, BOUNCED
+      status: 'PENDING',
     },
     {
       id: 'chk-2',
@@ -116,7 +108,6 @@ export default function SuppliersPage() {
     },
   ]);
 
-  // Form states
   const [newSupName, setNewSupName] = useState('');
   const [newSupCountry, setNewSupCountry] = useState('إندونيسيا');
   const [newSupPhone, setNewSupPhone] = useState('');
@@ -127,7 +118,6 @@ export default function SuppliersPage() {
   const [payBank, setPayBank] = useState('');
   const [payNotes, setPayNotes] = useState('');
 
-  // Filter logic
   const filteredSuppliers = suppliers.filter((s) => {
     const matchesSearch =
       s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -182,13 +172,13 @@ export default function SuppliersPage() {
     <AppLayout>
       <div className="space-y-6">
         {/* HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <h1 className="text-2xl font-black text-amber-400 flex items-center gap-2">
-              <Factory className="text-amber-500" />
+            <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
+              <Factory className="text-amber-600" />
               إدارة الموردين والتحويلات الدولية للشحن
             </h1>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               متابعة حسابات الموردين في (فيتنام، إندونيسيا، ومصر)، تحويلات العملة الصعبة (USD)، والشيكات البنكية.
             </p>
           </div>
@@ -196,14 +186,14 @@ export default function SuppliersPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowPaymentModal(true)}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow-lg shadow-emerald-600/20"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow"
             >
               <ArrowUpRight size={16} />
               + تحويل / سداد للمورد
             </button>
             <button
               onClick={() => setShowAddModal(true)}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow-lg shadow-amber-500/20"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow"
             >
               <Plus size={16} />
               إضافة مورد جديد
@@ -212,7 +202,7 @@ export default function SuppliersPage() {
         </div>
 
         {/* TAB BUTTONS */}
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-1">
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-1">
           {TABS.map((t) => {
             const Icon = t.icon;
             const isActive = tab === t.key;
@@ -222,8 +212,8 @@ export default function SuppliersPage() {
                 onClick={() => setTab(t.key)}
                 className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] ${
                   isActive
-                    ? 'border-amber-400 text-amber-400 bg-slate-900'
-                    : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                    ? 'border-amber-500 text-amber-700 bg-white'
+                    : 'border-transparent text-slate-500 hover:text-slate-900'
                 }`}
               >
                 <Icon size={16} />
@@ -238,24 +228,24 @@ export default function SuppliersPage() {
           <div className="space-y-6">
             {/* KPI STATS */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="glass-panel p-4 border-amber-500/30">
-                <div className="text-xs font-semibold text-slate-400">إجمالي مستحقات الموردين بالدولار</div>
-                <div className="text-2xl font-black text-amber-400 font-mono mt-1">
+              <div className="glass-panel p-4 border-amber-200 bg-amber-50/30">
+                <div className="text-xs font-bold text-slate-500">إجمالي مستحقات الموردين بالدولار</div>
+                <div className="text-2xl font-black text-amber-700 font-mono mt-1">
                   ${totalOwedUSD.toLocaleString()} USD
                 </div>
-                <div className="text-[11px] text-amber-500/80 mt-1">مطلوب تحويلها للموردين بالخارج</div>
+                <div className="text-[11px] text-amber-600 mt-1">مطلوب تحويلها للموردين بالخارج</div>
               </div>
 
               <div className="glass-panel p-4">
-                <div className="text-xs font-semibold text-slate-400">عدد الموردين المسجلين</div>
-                <div className="text-2xl font-black text-slate-100 mt-1">{filteredSuppliers.length} مورد</div>
-                <div className="text-[11px] text-slate-500 mt-1">فيتنام، إندونيسيا، ومصر</div>
+                <div className="text-xs font-bold text-slate-500">عدد الموردين المسجلين</div>
+                <div className="text-2xl font-black text-slate-900 mt-1">{filteredSuppliers.length} مورد</div>
+                <div className="text-[11px] text-slate-400 mt-1">فيتنام، إندونيسيا، ومصر</div>
               </div>
 
-              <div className="glass-panel p-4 border-emerald-500/30">
-                <div className="text-xs font-semibold text-slate-400">آخر تحويل بنكي دولي</div>
-                <div className="text-2xl font-black text-emerald-400 font-mono mt-1">$15,000 USD</div>
-                <div className="text-[11px] text-emerald-500/80 mt-1">تحويل سداد شحنة الفحم</div>
+              <div className="glass-panel p-4 border-emerald-200 bg-emerald-50/30">
+                <div className="text-xs font-bold text-slate-500">آخر تحويل بنكي دولي</div>
+                <div className="text-2xl font-black text-emerald-700 font-mono mt-1">$15,000 USD</div>
+                <div className="text-[11px] text-emerald-600 mt-1">تحويل سداد شحنة الفحم</div>
               </div>
             </div>
 
@@ -268,14 +258,14 @@ export default function SuppliersPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="ابحث باسم المورد أو الدولة..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pr-9 pl-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pr-9 pl-3 py-2 text-xs text-slate-800 focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <select
                 value={countryFilter}
                 onChange={(e) => setCountryFilter(e.target.value)}
-                className="w-full sm:w-auto bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500"
+                className="w-full sm:w-auto bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-none focus:border-amber-500"
               >
                 <option value="all">جميع الدول</option>
                 <option value="ID">🇮🇩 إندونيسيا</option>
@@ -287,7 +277,7 @@ export default function SuppliersPage() {
             {/* SUPPLIERS LIST */}
             <div className="glass-panel overflow-hidden">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
                   <tr>
                     <th className="p-3.5">اسم المورد والتخصص</th>
                     <th className="p-3.5">الدولة</th>
@@ -296,26 +286,26 @@ export default function SuppliersPage() {
                     <th className="p-3.5">ملاحظات والتصنيف</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100">
                   {filteredSuppliers.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-800/40">
-                      <td className="p-3.5 font-extrabold text-slate-100">{s.name}</td>
-                      <td className="p-3.5 text-slate-300 flex items-center gap-1.5">
-                        <Globe2 size={14} className="text-amber-400" />
+                    <tr key={s.id} className="hover:bg-slate-50">
+                      <td className="p-3.5 font-extrabold text-slate-900">{s.name}</td>
+                      <td className="p-3.5 text-slate-700 flex items-center gap-1.5">
+                        <Globe2 size={14} className="text-amber-600" />
                         {s.country}
                       </td>
                       <td className="p-3.5">
-                        <p className="font-mono text-slate-300">{s.phone}</p>
-                        <p className="text-[10px] text-slate-500">{s.email}</p>
+                        <p className="font-mono text-slate-800">{s.phone}</p>
+                        <p className="text-[10px] text-slate-400">{s.email}</p>
                       </td>
                       <td className="p-3.5 font-mono font-bold text-sm">
                         {s.balanceUSD ? (
-                          <span className="text-rose-400">${s.balanceUSD.toLocaleString()} USD</span>
+                          <span className="text-rose-600">${s.balanceUSD.toLocaleString()} USD</span>
                         ) : (
-                          <span className="text-amber-400">{s.balanceEGP?.toLocaleString()} EGP</span>
+                          <span className="text-amber-700">{s.balanceEGP?.toLocaleString()} EGP</span>
                         )}
                       </td>
-                      <td className="p-3.5 text-slate-400">{s.notes}</td>
+                      <td className="p-3.5 text-slate-500">{s.notes}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -329,12 +319,12 @@ export default function SuppliersPage() {
           <div className="space-y-6">
             <div className="glass-panel p-4 flex items-center justify-between">
               <div>
-                <h3 className="font-extrabold text-sm text-slate-100">سجل التحويلات والسداد البنكي للموردين</h3>
-                <p className="text-xs text-slate-400">سجل التحويلات البنكية بالدولار والعملات المحلية لموردي الاستيراد</p>
+                <h3 className="font-extrabold text-sm text-slate-900">سجل التحويلات والسداد البنكي للموردين</h3>
+                <p className="text-xs text-slate-500">سجل التحويلات البنكية بالدولار والعملات المحلية لموردي الاستيراد</p>
               </div>
               <button
                 onClick={() => setShowPaymentModal(true)}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-2 rounded-xl"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-2 rounded-xl shadow"
               >
                 + سداد جديد
               </button>
@@ -342,7 +332,7 @@ export default function SuppliersPage() {
 
             <div className="glass-panel overflow-hidden">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
                   <tr>
                     <th className="p-3.5">المورد</th>
                     <th className="p-3.5">تاريخ التحويل</th>
@@ -352,17 +342,17 @@ export default function SuppliersPage() {
                     <th className="p-3.5">ملاحظات الشحنة</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100">
                   {payments.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-800/30">
-                      <td className="p-3.5 font-bold text-slate-200">{p.supplierName}</td>
-                      <td className="p-3.5 font-mono text-slate-400">{p.date}</td>
-                      <td className="p-3.5 font-mono font-bold text-emerald-400 text-sm">
+                    <tr key={p.id} className="hover:bg-slate-50">
+                      <td className="p-3.5 font-bold text-slate-800">{p.supplierName}</td>
+                      <td className="p-3.5 font-mono text-slate-500">{p.date}</td>
+                      <td className="p-3.5 font-mono font-bold text-emerald-700 text-sm">
                         ${p.amountUSD.toLocaleString()} USD
                       </td>
-                      <td className="p-3.5 text-slate-300">{p.paymentMethod}</td>
-                      <td className="p-3.5 text-slate-400">{p.bankName}</td>
-                      <td className="p-3.5 text-slate-400">{p.notes}</td>
+                      <td className="p-3.5 text-slate-700">{p.paymentMethod}</td>
+                      <td className="p-3.5 text-slate-500">{p.bankName}</td>
+                      <td className="p-3.5 text-slate-500">{p.notes}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -375,16 +365,16 @@ export default function SuppliersPage() {
         {tab === 'checks' && (
           <div className="space-y-6">
             <div className="glass-panel p-4">
-              <h3 className="font-extrabold text-sm text-slate-100 flex items-center gap-2">
-                <FileCheck className="text-amber-400" size={18} />
+              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                <FileCheck className="text-amber-600" size={18} />
                 سجل الشيكات والاعتمادات المستندية
               </h3>
-              <p className="text-xs text-slate-400 mt-1">متابعة الشيكات الصادرة والواردة وتواريخ الاستحقاق البنكي</p>
+              <p className="text-xs text-slate-500 mt-1">متابعة الشيكات الصادرة والواردة وتواريخ الاستحقاق البنكي</p>
             </div>
 
             <div className="glass-panel overflow-hidden">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
                   <tr>
                     <th className="p-3.5">رقم الشيك / الاعتماد</th>
                     <th className="p-3.5">اسم المورد</th>
@@ -395,24 +385,24 @@ export default function SuppliersPage() {
                     <th className="p-3.5 text-center">حالة الصرف</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100">
                   {checks.map((chk) => (
-                    <tr key={chk.id} className="hover:bg-slate-800/30">
-                      <td className="p-3.5 font-mono font-bold text-amber-400">{chk.checkNumber}</td>
-                      <td className="p-3.5 font-bold text-slate-200">{chk.supplierName}</td>
-                      <td className="p-3.5 text-slate-300">{chk.bankName}</td>
-                      <td className="p-3.5 font-mono font-bold text-emerald-400 text-sm">
+                    <tr key={chk.id} className="hover:bg-slate-50">
+                      <td className="p-3.5 font-mono font-bold text-amber-700">{chk.checkNumber}</td>
+                      <td className="p-3.5 font-bold text-slate-800">{chk.supplierName}</td>
+                      <td className="p-3.5 text-slate-700">{chk.bankName}</td>
+                      <td className="p-3.5 font-mono font-bold text-emerald-700 text-sm">
                         {chk.amount.toLocaleString()} {chk.currency}
                       </td>
-                      <td className="p-3.5 font-mono text-slate-400">{chk.issueDate}</td>
-                      <td className="p-3.5 font-mono text-slate-400">{chk.dueDate}</td>
+                      <td className="p-3.5 font-mono text-slate-500">{chk.issueDate}</td>
+                      <td className="p-3.5 font-mono text-slate-500">{chk.dueDate}</td>
                       <td className="p-3.5 text-center">
                         {chk.status === 'CLEARED' ? (
-                          <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                          <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
                             تم الصرف
                           </span>
                         ) : (
-                          <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                          <span className="bg-amber-100 text-amber-700 border border-amber-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
                             مستحق الصرف
                           </span>
                         )}
@@ -428,28 +418,28 @@ export default function SuppliersPage() {
 
       {/* MODAL: ADD SUPPLIER */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-panel w-full max-w-md p-6 space-y-4 border-amber-500/30">
-            <h3 className="font-black text-lg text-amber-400">إضافة مورد جديد</h3>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-slate-200">
+            <h3 className="font-black text-lg text-slate-900">إضافة مورد جديد</h3>
             <form onSubmit={handleAddSupplier} className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">اسم المورد / الشركة *</label>
+                <label className="block text-slate-600 mb-1 font-bold">اسم المورد / الشركة *</label>
                 <input
                   type="text"
                   required
                   value={newSupName}
                   onChange={(e) => setNewSupName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
                   placeholder="مثال: PT Nusantara Export"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">دولة المورد</label>
+                <label className="block text-slate-600 mb-1 font-bold">دولة المورد</label>
                 <select
                   value={newSupCountry}
                   onChange={(e) => setNewSupCountry(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
                 >
                   <option value="إندونيسيا">🇮🇩 إندونيسيا (Indonesia)</option>
                   <option value="فيتنام">🇻🇳 فيتنام (Vietnam)</option>
@@ -458,23 +448,23 @@ export default function SuppliersPage() {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">رقم الهاتف الدولي</label>
+                <label className="block text-slate-600 mb-1 font-bold">رقم الهاتف الدولي</label>
                 <input
                   type="text"
                   value={newSupPhone}
                   onChange={(e) => setNewSupPhone(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
                   placeholder="+62 812..."
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">البريد الإلكتروني</label>
+                <label className="block text-slate-600 mb-1 font-bold">البريد الإلكتروني</label>
                 <input
                   type="email"
                   value={newSupEmail}
                   onChange={(e) => setNewSupEmail(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
                   placeholder="export@supplier.com"
                 />
               </div>
@@ -483,13 +473,13 @@ export default function SuppliersPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700"
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-extrabold hover:bg-amber-400"
+                  className="px-4 py-2 rounded-xl bg-amber-500 text-white font-extrabold hover:bg-amber-600 shadow"
                 >
                   حفظ المورد
                 </button>
@@ -501,16 +491,16 @@ export default function SuppliersPage() {
 
       {/* MODAL: ADD SUPPLIER PAYMENT */}
       {showPaymentModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-panel w-full max-w-md p-6 space-y-4 border-emerald-500/30">
-            <h3 className="font-black text-lg text-emerald-400">سداد تحويل دولي لمورد</h3>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-slate-200">
+            <h3 className="font-black text-lg text-emerald-700">سداد تحويل دولي لمورد</h3>
             <form onSubmit={handleAddPayment} className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">اسم المورد *</label>
+                <label className="block text-slate-600 mb-1 font-bold">اسم المورد *</label>
                 <select
                   value={paySupName}
                   onChange={(e) => setPaySupName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                   required
                 >
                   <option value="">اختر المورد...</option>
@@ -523,35 +513,35 @@ export default function SuppliersPage() {
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">المبلغ المحول ($ USD) *</label>
+                <label className="block text-slate-600 mb-1 font-bold">المبلغ المحول ($ USD) *</label>
                 <input
                   type="number"
                   required
                   value={payAmountUSD}
                   onChange={(e) => setPayAmountUSD(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-emerald-500 font-mono font-bold"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-emerald-500"
                   placeholder="0.00 $"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">البنك الصادر والفرع</label>
+                <label className="block text-slate-600 mb-1 font-bold">البنك الصادر والفرع</label>
                 <input
                   type="text"
                   value={payBank}
                   onChange={(e) => setPayBank(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                   placeholder="مثال: البنك الأهلي المصري - حساب الدولار"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">ملاحظات التحويل</label>
+                <label className="block text-slate-600 mb-1 font-bold">ملاحظات التحويل</label>
                 <input
                   type="text"
                   value={payNotes}
                   onChange={(e) => setPayNotes(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-emerald-500"
                   placeholder="رقم الشحنة / الـ LC..."
                 />
               </div>
@@ -560,13 +550,13 @@ export default function SuppliersPage() {
                 <button
                   type="button"
                   onClick={() => setShowPaymentModal(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-bold hover:bg-slate-700"
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-500"
+                  className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-extrabold hover:bg-emerald-700 shadow"
                 >
                   تأكيد التحويل
                 </button>
