@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { useApp } from '@/context/AppContext';
 import {
   PieChart as PieChartIcon,
   TrendingUp,
@@ -42,14 +43,15 @@ import {
 } from 'recharts';
 
 export default function FinanceReportsPage() {
+  const { usdToEgpRate, usdToOmrRate, selectedBranch: contextBranch } = useApp();
   const [activeTab, setActiveTab] = useState<'decision' | 'income' | 'products' | 'aging' | 'containers'>('decision');
   const [selectedCurrency, setSelectedCurrency] = useState<'EGP' | 'USD' | 'OMR'>('EGP');
   const [selectedPeriod, setSelectedPeriod] = useState<'MONTH' | 'QUARTER' | 'YEAR'>('MONTH');
-  const [selectedBranch, setSelectedBranch] = useState<'ALL' | 'EGY' | 'OMN'>('ALL');
+  const [selectedBranch, setSelectedBranch] = useState<'ALL' | 'EGY' | 'OMN'>(contextBranch || 'ALL');
 
-  // Multi-currency coefficients
-  const usdRate = 48.5;
-  const omrRate = 0.385;
+  // Multi-currency coefficients from context
+  const usdRate = usdToEgpRate || 48.5;
+  const omrRate = usdToOmrRate || 0.385;
 
   const convertAmount = (egpAmount: number) => {
     if (selectedCurrency === 'USD') return egpAmount / usdRate;

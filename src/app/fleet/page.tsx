@@ -2,305 +2,507 @@
 
 import React, { useState } from 'react';
 import AppLayout from '@/components/layout/AppLayout';
+import { useApp } from '@/context/AppContext';
+import { Vehicle } from '@/data/mockData';
 import {
   Truck,
   AlertTriangle,
   Wrench,
-  Gauge
+  Gauge,
+  Plus,
+  Search,
+  CheckCircle2,
+  Clock,
+  Fuel,
+  MapPin,
+  X,
+  Phone
 } from 'lucide-react';
 
 export default function FleetPage() {
-  const [showLogModal, setShowLogModal] = useState(false);
+  const {
+    vehicles,
+    tripLogs,
+    maintenanceLogs,
+    addTripLog,
+    registerOilChange,
+    addVehicle,
+  } = useApp();
 
-  const [vehicles, setVehicles] = useState([
-    {
-      id: 'v1',
-      plateNumber: 'أ ب ج 1234',
-      model: 'جامبو أيسوزو 4 طن (مصر)',
-      branch: 'EGY',
-      driverName: 'أسامة السيد',
-      lastOdometerKm: 42500,
-      lastOilChangeKm: 41200,
-      status: 'ACTIVE',
-    },
-    {
-      id: 'v2',
-      plateNumber: 'س ص ع 5678',
-      model: 'تويوتا دينا 5 طن (مصر)',
-      branch: 'EGY',
-      driverName: 'إبراهيم علي',
-      lastOdometerKm: 68100,
-      lastOilChangeKm: 66400,
-      status: 'MAINTENANCE_REQUIRED',
-    },
-    {
-      id: 'v3',
-      plateNumber: 'OMN-88219',
-      model: 'نيسان نيفارا نقل (مسقط)',
-      branch: 'OMN',
-      driverName: 'سالم المعمري',
-      lastOdometerKm: 19800,
-      lastOilChangeKm: 19000,
-      status: 'ACTIVE',
-    },
-  ]);
+  const [activeTab, setActiveTab] = useState<'vehicles' | 'trips' | 'maintenance'>('vehicles');
+  const [search, setSearch] = useState('');
 
-  const [tripLogs, setTripLogs] = useState([
-    {
-      id: 'log-1',
-      plateNumber: 'س ص ع 5678',
-      driverName: 'إبراهيم علي',
-      date: '2026-08-29',
-      startKm: 67900,
-      endKm: 68100,
-      distanceKm: 200,
-      fuelCost: 950,
-      costPerKm: 4.75,
-    },
-    {
-      id: 'log-2',
-      plateNumber: 'أ ب ج 1234',
-      driverName: 'أسامة السيد',
-      date: '2026-08-28',
-      startKm: 42250,
-      endKm: 42500,
-      distanceKm: 250,
-      fuelCost: 1200,
-      costPerKm: 4.8,
-    },
-  ]);
+  // Modals
+  const [showTripModal, setShowTripModal] = useState(false);
+  const [showOilChangeModal, setShowOilChangeModal] = useState(false);
+  const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
+  const [selectedVehicleForOil, setSelectedVehicleForOil] = useState<Vehicle | null>(null);
 
-  const [logPlate, setLogPlate] = useState('س ص ع 5678');
-  const [logDriver, setLogDriver] = useState('');
-  const [logStartKm, setLogStartKm] = useState('');
-  const [logEndKm, setLogEndKm] = useState('');
-  const [logFuelCost, setLogFuelCost] = useState('');
+  // New Trip Log Form state
+  const [tripVehicleId, setTripVehicleId] = useState(vehicles[0]?.id || '');
+  const [tripDriver, setTripDriver] = useState('');
+  const [tripStartKm, setTripStartKm] = useState<number>(0);
+  const [tripEndKm, setTripEndKm] = useState<number>(0);
+  const [tripFuelCost, setTripFuelCost] = useState<number>(0);
+  const [tripDestination, setTripDestination] = useState('');
+  const [tripCargo, setTripCargo] = useState('');
 
-  const handleAddTripLog = (e: React.FormEvent) => {
+  // Oil Change Form state
+  const [oilCost, setOilCost] = useState<number>(1850);
+  const [oilCenter, setOilCenter] = useState('مركز شل للصيانة والزيوت');
+  const [oilNotes, setOilNotes] = useState('تغيير زيت شل 10,000 كم + فلتر زيت وفلتر هواء');
+
+  // Add Vehicle Form state
+  const [newPlate, setNewPlate] = useState('');
+  const [newModel, setNewModel] = useState('');
+  const [newBranch, setNewBranch] = useState<'EGY' | 'OMN'>('EGY');
+  const [newDriverName, setNewDriverName] = useState('');
+  const [newDriverPhone, setNewDriverPhone] = useState('');
+  const [newCurrentKm, setNewCurrentKm] = useState<number>(10000);
+
+  // Handle open trip modal and pre-fill odometer
+  const handleOpenTripModal = (veh?: Vehicle) => {
+    const target = veh || vehicles[0];
+    if (target) {
+      setTripVehicleId(target.id);
+      setTripDriver(target.driverName);
+      setTripStartKm(target.lastOdometerKm);
+      setTripEndKm(target.lastOdometerKm + 150);
+      setTripFuelCost(target.branch === 'EGY' ? 850 : 7.5);
+      setTripDestination(target.branch === 'EGY' ? 'خط توزيع القاهرة الكبرى' : 'خط توزيع محافظة مسقط');
+      setTripCargo('5 طن فحم طبيعي فاخر للمطاعم');
+    }
+    setShowTripModal(true);
+  };
+
+  // Submit Trip
+  const handleAddTripSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const start = parseFloat(logStartKm) || 0;
-    const end = parseFloat(logEndKm) || 0;
-    const fuel = parseFloat(logFuelCost) || 0;
-    const distance = Math.max(0, end - start);
-    const costPerKm = distance > 0 ? fuel / distance : 0;
+    const targetVeh = vehicles.find((v) => v.id === tripVehicleId);
+    if (!targetVeh) return;
 
-    const newLog = {
-      id: 'log-' + Date.now(),
-      plateNumber: logPlate,
-      driverName: logDriver || 'سائق التوزيع',
+    const dist = Math.max(0, tripEndKm - tripStartKm);
+    const costPerKm = dist > 0 ? tripFuelCost / dist : 0;
+
+    addTripLog({
+      vehicleId: targetVeh.id,
+      plateNumber: targetVeh.plateNumber,
+      driverName: tripDriver || targetVeh.driverName,
       date: new Date().toISOString().split('T')[0],
-      startKm: start,
-      endKm: end,
-      distanceKm: distance,
-      fuelCost: fuel,
+      destination: tripDestination || 'خط توزيع منتظم',
+      startKm: tripStartKm,
+      endKm: tripEndKm,
+      distanceKm: dist,
+      fuelCost: tripFuelCost,
       costPerKm: costPerKm,
+      deliveredCargo: tripCargo || 'بضائع فحم وتعبئة',
+    });
+
+    setShowTripModal(false);
+  };
+
+  // Open Oil change modal for a vehicle
+  const handleOpenOilModal = (veh: Vehicle) => {
+    setSelectedVehicleForOil(veh);
+    setShowOilChangeModal(true);
+  };
+
+  const handleOilChangeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedVehicleForOil) return;
+
+    registerOilChange(selectedVehicleForOil.id, oilCost, oilCenter, oilNotes);
+    setShowOilChangeModal(false);
+  };
+
+  // Add Vehicle Submit
+  const handleAddVehicleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPlate || !newModel) return;
+
+    const newVeh: Vehicle = {
+      id: 'veh-' + Date.now(),
+      plateNumber: newPlate,
+      model: newModel,
+      branch: newBranch,
+      driverName: newDriverName || 'سائق جديد',
+      driverPhone: newDriverPhone || '—',
+      lastOdometerKm: newCurrentKm,
+      lastOilChangeKm: newCurrentKm,
+      nextOilChangeAlertKm: newCurrentKm + 1500,
+      fuelTankCapacityLiters: 90,
+      avgCostPerKm: newBranch === 'EGY' ? 4.8 : 0.045,
+      status: 'ACTIVE',
     };
 
-    setTripLogs([newLog, ...tripLogs]);
+    addVehicle(newVeh);
+    setShowAddVehicleModal(false);
 
-    setVehicles(
-      vehicles.map((v) => {
-        if (v.plateNumber === logPlate) {
-          const newOdo = Math.max(v.lastOdometerKm, end);
-          const drivenSinceOil = newOdo - v.lastOilChangeKm;
-          return {
-            ...v,
-            lastOdometerKm: newOdo,
-            status: drivenSinceOil >= 1500 ? 'MAINTENANCE_REQUIRED' : 'ACTIVE',
-          };
-        }
-        return v;
-      })
-    );
-
-    setShowLogModal(false);
+    setNewPlate('');
+    setNewModel('');
+    setNewDriverName('');
+    setNewDriverPhone('');
   };
 
-  const handleRegisterOilChange = (vehicleId: string) => {
-    setVehicles(
-      vehicles.map((v) => {
-        if (v.id === vehicleId) {
-          return {
-            ...v,
-            lastOilChangeKm: v.lastOdometerKm,
-            status: 'ACTIVE',
-          };
-        }
-        return v;
-      })
-    );
-  };
+  // Filtered vehicles
+  const filteredVehicles = vehicles.filter(
+    (v) =>
+      v.plateNumber.toLowerCase().includes(search.toLowerCase()) ||
+      v.model.toLowerCase().includes(search.toLowerCase()) ||
+      v.driverName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const urgentVehiclesCount = vehicles.filter(
+    (v) => v.lastOdometerKm - v.lastOilChangeKm >= 1500
+  ).length;
 
   return (
     <AppLayout>
       <div className="space-y-6">
-        {/* HEADER */}
+        {/* PAGE HEADER */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
             <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
               <Truck className="text-amber-600" />
-              إدارة حركة السيارات وحساب تكلفة الكيلومتر
+              إدارة أسطول سيارات التوزيع وتكلفة الكيلومتر
             </h1>
             <p className="text-xs text-slate-500 mt-1">
-              متابعة عداد الخروج والرجوع، استهلاك الوقود، ونظام إنذار تغيير الزيت التلقائي كل 1500 كم.
+              متابعة قراءات عداد الخروج والرجوع، استهلاك الوقود، ونظام إنذار تغيير الزيت التلقائي كل 1500 كم.
             </p>
           </div>
 
-          <button
-            onClick={() => setShowLogModal(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow"
-          >
-            <Gauge size={16} />
-            + تسجيل حركة عداد جديدة
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleOpenTripModal()}
+              className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow-md shadow-amber-500/20"
+            >
+              <Gauge size={16} />
+              + تسجيل حركة عداد ورحلة
+            </button>
+            <button
+              onClick={() => setShowAddVehicleModal(true)}
+              className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center gap-1 shadow-sm transition"
+            >
+              <Plus size={16} />
+              إضافة سيارة
+            </button>
+          </div>
         </div>
 
-        {/* OIL CHANGE ALERT BANNER */}
-        {vehicles.some((v) => v.lastOdometerKm - v.lastOilChangeKm >= 1500) && (
-          <div className="glass-panel p-4 border-rose-300 bg-rose-50/60 flex items-center justify-between flex-wrap gap-3 animate-pulse shadow-sm">
+        {/* OIL CHANGE ALARM BANNER (CRITICAL 1500 KM ALARM) */}
+        {urgentVehiclesCount > 0 && (
+          <div className="glass-panel p-4 border-rose-300 bg-rose-50/70 flex items-center justify-between flex-wrap gap-3 animate-pulse shadow-sm">
             <div className="flex items-center gap-3">
-              <AlertTriangle className="text-rose-600" size={24} />
+              <div className="p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-200">
+                <AlertTriangle size={24} />
+              </div>
               <div>
                 <h4 className="font-extrabold text-sm text-rose-800">
-                  تنبيه هام: سيارة تجاوزت 1,500 كم وبحاجة لتغيير الزيت فوراً!
+                  تنبيه عاجل: {urgentVehiclesCount} سيارة تجاوزت 1,500 كم وبحاجة لتغيير الزيت فوراً!
                 </h4>
                 <p className="text-xs text-rose-600 mt-0.5">
-                  يرجى تغيير زيت الفلتر والمحرك للحفاظ على كفاءة سيارات التوزيع.
+                  تجاوز المسافة المسموحة يؤثر على عمر المحرك، يرجى تغيير الزيت وتصفير العداد للحفاظ على كفاءة الأسطول.
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* VEHICLE CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {vehicles.map((v) => {
-            const drivenSinceOil = v.lastOdometerKm - v.lastOilChangeKm;
-            const isAlert = drivenSinceOil >= 1500;
-            return (
-              <div
-                key={v.id}
-                className={`glass-panel p-5 space-y-3 relative overflow-hidden ${
-                  isAlert ? 'border-rose-300 bg-rose-50/30' : 'border-slate-200'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-xs text-slate-500 font-mono">{v.branch === 'EGY' ? '🇪🇬 فرع مصر' : '🇴🇲 عمان'}</span>
-                    <h3 className="font-black text-base text-slate-900 mt-0.5">{v.model}</h3>
-                    <p className="text-xs font-mono font-bold text-amber-700 mt-0.5">{v.plateNumber}</p>
-                  </div>
-                  {isAlert ? (
-                    <span className="bg-rose-100 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-                      <AlertTriangle size={12} />
-                      تغيير زيت فوراً!
-                    </span>
-                  ) : (
-                    <span className="bg-emerald-100 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-bold">
-                      حالة ممتازة
-                    </span>
-                  )}
-                </div>
+        {/* TABS */}
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-1 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('vehicles')}
+            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+              activeTab === 'vehicles'
+                ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
+                : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Truck size={16} />
+            أسطول السيارات ({vehicles.length})
+          </button>
 
-                <div className="space-y-1.5 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">السائق المسند:</span>
-                    <span className="font-bold text-slate-800">{v.driverName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">قراءة العداد الحالية:</span>
-                    <span className="font-mono font-bold text-sky-700">{v.lastOdometerKm.toLocaleString()} كم</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">المقطوع منذ آخر زيت:</span>
-                    <span className={`font-mono font-bold ${isAlert ? 'text-rose-700 font-black' : 'text-amber-700'}`}>
-                      {drivenSinceOil.toLocaleString()} / 1,500 كم
-                    </span>
-                  </div>
-                </div>
+          <button
+            onClick={() => setActiveTab('trips')}
+            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+              activeTab === 'trips'
+                ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
+                : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Gauge size={16} />
+            سجل رحلات العداد والوقود ({tripLogs.length})
+          </button>
 
-                <div className="flex items-center justify-between pt-2">
-                  {isAlert ? (
-                    <button
-                      onClick={() => handleRegisterOilChange(v.id)}
-                      className="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition shadow"
-                    >
-                      <Wrench size={14} />
-                      تسجيل تغيير زيت الآن (تصفير التنبيه)
-                    </button>
-                  ) : (
-                    <span className="text-[11px] text-slate-400">متبقي على التغيير: {1500 - drivenSinceOil} كم</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          <button
+            onClick={() => setActiveTab('maintenance')}
+            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+              activeTab === 'maintenance'
+                ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
+                : 'border-transparent text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Wrench size={16} />
+            سجل الصيانة وتغيير الزيت ({maintenanceLogs.length})
+          </button>
         </div>
 
-        {/* RECENT TRIP ODOMETER LOGS TABLE */}
-        <div className="glass-panel overflow-hidden">
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
-              <Gauge className="text-amber-600" size={18} />
-              سجل قراءات العداد والوقود وتكلفة الكيلومتر
-            </h3>
-            <button
-              onClick={() => setShowLogModal(true)}
-              className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1 rounded-lg font-bold"
-            >
-              + إضافة رحلة
-            </button>
+        {/* TAB 1: VEHICLES CARDS GRID */}
+        {activeTab === 'vehicles' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredVehicles.map((v) => {
+                const drivenSinceOil = v.lastOdometerKm - v.lastOilChangeKm;
+                const isAlert = drivenSinceOil >= 1500;
+                const progressPercent = Math.min(100, Math.round((drivenSinceOil / 1500) * 100));
+
+                return (
+                  <div
+                    key={v.id}
+                    className={`glass-panel p-5 space-y-3.5 relative overflow-hidden transition-all duration-200 ${
+                      isAlert
+                        ? 'border-rose-400 bg-rose-50/30 ring-1 ring-rose-400'
+                        : 'border-slate-200 hover:border-amber-300'
+                    }`}
+                  >
+                    {/* CARD HEADER */}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                          {v.branch === 'EGY' ? '🇪🇬 فرع مصر' : '🇴🇲 فرع عمان'}
+                        </span>
+                        <h3 className="font-black text-base text-slate-900 mt-0.5">{v.model}</h3>
+                        <p className="text-xs font-mono font-extrabold text-amber-700 mt-0.5">
+                          {v.plateNumber}
+                        </p>
+                      </div>
+
+                      {isAlert ? (
+                        <span className="bg-rose-100 text-rose-800 border border-rose-300 px-2.5 py-1 rounded-full text-[10px] font-black flex items-center gap-1 animate-pulse">
+                          <AlertTriangle size={12} />
+                          تغيير زيت فوراً!
+                        </span>
+                      ) : (
+                        <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                          جاهزة للعمل
+                        </span>
+                      )}
+                    </div>
+
+                    {/* VEHICLE SPECS & ODOMETER */}
+                    <div className="space-y-2 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">السائق المسند:</span>
+                        <span className="font-bold text-slate-800">{v.driverName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">قراءة العداد الحالية:</span>
+                        <span className="font-mono font-bold text-sky-700">
+                          {v.lastOdometerKm.toLocaleString()} كم
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500">المقطوع منذ آخر تغيير زيت:</span>
+                        <span
+                          className={`font-mono font-black ${
+                            isAlert ? 'text-rose-600 text-sm' : 'text-amber-700'
+                          }`}
+                        >
+                          {drivenSinceOil.toLocaleString()} / 1,500 كم
+                        </span>
+                      </div>
+
+                      {/* PROGRESS BAR TO 1500 KM */}
+                      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-1.5">
+                        <div
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            isAlert
+                              ? 'bg-rose-600'
+                              : progressPercent > 70
+                              ? 'bg-amber-500'
+                              : 'bg-emerald-500'
+                          }`}
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* CARD ACTIONS */}
+                    <div className="pt-2 flex items-center gap-2">
+                      {isAlert ? (
+                        <button
+                          onClick={() => handleOpenOilModal(v)}
+                          className="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition shadow"
+                        >
+                          <Wrench size={14} />
+                          تسجيل تغيير زيت وتصفير الإنذار
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleOpenTripModal(v)}
+                            className="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1"
+                          >
+                            <Gauge size={13} />
+                            تسجيل رحلة
+                          </button>
+                          <button
+                            onClick={() => handleOpenOilModal(v)}
+                            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
+                            title="تسجيل صيانة وقائية"
+                          >
+                            <Wrench size={15} />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
+        )}
 
-          <table className="w-full text-right text-xs">
-            <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
-              <tr>
-                <th className="p-3.5">السيارة والسائق</th>
-                <th className="p-3.5">التاريخ</th>
-                <th className="p-3.5">عداد الخروج</th>
-                <th className="p-3.5">عداد العودة</th>
-                <th className="p-3.5">المسافة (كم)</th>
-                <th className="p-3.5">تكلفة الوقود</th>
-                <th className="p-3.5 font-bold text-amber-700">تكلفة الكيلو الواحدة</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {tripLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50">
-                  <td className="p-3.5 font-bold text-slate-800">
-                    <p>{log.plateNumber}</p>
-                    <p className="text-[10px] text-slate-500">{log.driverName}</p>
-                  </td>
-                  <td className="p-3.5 font-mono text-slate-500">{log.date}</td>
-                  <td className="p-3.5 font-mono text-slate-700">{log.startKm.toLocaleString()} كم</td>
-                  <td className="p-3.5 font-mono text-slate-700">{log.endKm.toLocaleString()} كم</td>
-                  <td className="p-3.5 font-mono font-bold text-sky-700">{log.distanceKm} كم</td>
-                  <td className="p-3.5 font-mono text-amber-700">{log.fuelCost.toLocaleString()} ج.م</td>
-                  <td className="p-3.5 font-mono font-extrabold text-emerald-700 text-sm">
-                    {log.costPerKm.toFixed(2)} ج.م / كم
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        {/* TAB 2: TRIP & ODOMETER LOGS */}
+        {activeTab === 'trips' && (
+          <div className="space-y-4">
+            <div className="glass-panel p-4 flex items-center justify-between">
+              <div>
+                <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                  <Gauge className="text-amber-600" size={18} />
+                  سجل قراءات عداد الخروج والرجوع والوقود وتكلفة الكيلومتر
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  حساب تكلفة الكيلو متر تلقائياً (الوقود ÷ المسافة المقطوعة) لكل رحلة
+                </p>
+              </div>
+              <button
+                onClick={() => handleOpenTripModal()}
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow"
+              >
+                + إضافة رحلة
+              </button>
+            </div>
+
+            <div className="glass-panel overflow-hidden">
+              <table className="w-full text-right text-xs">
+                <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="p-3.5">السيارة والسائق</th>
+                    <th className="p-3.5">خط السير والوجهة</th>
+                    <th className="p-3.5">التاريخ</th>
+                    <th className="p-3.5">عداد البداية</th>
+                    <th className="p-3.5">عداد النهاية</th>
+                    <th className="p-3.5">المسافة</th>
+                    <th className="p-3.5">تكلفة الوقود</th>
+                    <th className="p-3.5 font-bold text-amber-700">تكلفة الكيلو</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {tripLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-slate-50">
+                      <td className="p-3.5 font-bold text-slate-800">
+                        <p className="font-mono text-slate-900">{log.plateNumber}</p>
+                        <p className="text-[10px] text-slate-500">{log.driverName}</p>
+                      </td>
+                      <td className="p-3.5 text-slate-700 font-medium">{log.destination}</td>
+                      <td className="p-3.5 font-mono text-slate-500">{log.date}</td>
+                      <td className="p-3.5 font-mono text-slate-700">{log.startKm.toLocaleString()} كم</td>
+                      <td className="p-3.5 font-mono text-slate-700">{log.endKm.toLocaleString()} كم</td>
+                      <td className="p-3.5 font-mono font-bold text-sky-700">{log.distanceKm} كم</td>
+                      <td className="p-3.5 font-mono text-amber-700 font-bold">{log.fuelCost.toLocaleString()}</td>
+                      <td className="p-3.5 font-mono font-black text-emerald-700 text-sm">
+                        {log.costPerKm.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: MAINTENANCE LOGS */}
+        {activeTab === 'maintenance' && (
+          <div className="space-y-4">
+            <div className="glass-panel p-4">
+              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                <Wrench className="text-amber-600" size={18} />
+                سجل صيانة الزيوت والفلاتر وتصفير العداد
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                توثيق جميع عمليات الصيانة وتغيير الزيت وتكلفتها
+              </p>
+            </div>
+
+            <div className="glass-panel overflow-hidden">
+              <table className="w-full text-right text-xs">
+                <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="p-3.5">السيارة</th>
+                    <th className="p-3.5">نوع الصيانة</th>
+                    <th className="p-3.5">قراءة العداد عند الصيانة</th>
+                    <th className="p-3.5">مركز الخدمة</th>
+                    <th className="p-3.5">التكلفة</th>
+                    <th className="p-3.5">التاريخ</th>
+                    <th className="p-3.5">ملاحظات</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {maintenanceLogs.map((m) => (
+                    <tr key={m.id} className="hover:bg-slate-50">
+                      <td className="p-3.5 font-mono font-bold text-amber-700">{m.plateNumber}</td>
+                      <td className="p-3.5 font-bold text-slate-800">{m.serviceType}</td>
+                      <td className="p-3.5 font-mono text-sky-700">{m.serviceKm.toLocaleString()} كم</td>
+                      <td className="p-3.5 text-slate-700">{m.centerName}</td>
+                      <td className="p-3.5 font-mono font-bold text-emerald-700">
+                        {m.cost.toLocaleString()} ج.م
+                      </td>
+                      <td className="p-3.5 font-mono text-slate-500">{m.date}</td>
+                      <td className="p-3.5 text-slate-500">{m.notes}</td>
+                    </tr>
+                  ))}
+                  {maintenanceLogs.length === 0 && (
+                    <tr>
+                      <td colSpan={7} className="text-center py-6 text-slate-400">
+                        سجل الصيانة فارغ، يتم إدراج السجلات عند تصفير إنذار الزيت أو الصيانة الدورية.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* MODAL: ADD TRIP LOG */}
-      {showLogModal && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-xl border border-slate-200">
-            <h3 className="font-black text-lg text-slate-900">تسجيل رحلة وقراءة عداد جديدة</h3>
-            <form onSubmit={handleAddTripLog} className="space-y-3 text-xs">
+      {/* MODAL 1: ADD TRIP & ODOMETER LOG */}
+      {showTripModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+              <Gauge className="text-amber-600" />
+              تسجيل رحلة وقراءة عداد جديدة
+            </h3>
+
+            <form onSubmit={handleAddTripSubmit} className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-600 mb-1 font-bold">السيارة *</label>
+                <label className="block text-slate-700 font-bold mb-1">السيارة *</label>
                 <select
-                  value={logPlate}
-                  onChange={(e) => setLogPlate(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
+                  value={tripVehicleId}
+                  onChange={(e) => {
+                    const veh = vehicles.find((v) => v.id === e.target.value);
+                    if (veh) {
+                      setTripVehicleId(veh.id);
+                      setTripDriver(veh.driverName);
+                      setTripStartKm(veh.lastOdometerKm);
+                      setTripEndKm(veh.lastOdometerKm + 150);
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                 >
                   {vehicles.map((v) => (
-                    <option key={v.id} value={v.plateNumber}>
+                    <option key={v.id} value={v.id}>
                       {v.model} ({v.plateNumber})
                     </option>
                   ))}
@@ -308,67 +510,235 @@ export default function FleetPage() {
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1 font-bold">اسم السائق</label>
+                <label className="block text-slate-700 font-bold mb-1">اسم السائق</label>
                 <input
                   type="text"
-                  value={logDriver}
-                  onChange={(e) => setLogDriver(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-amber-500"
-                  placeholder="اسم السائق..."
+                  value={tripDriver}
+                  onChange={(e) => setTripDriver(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">خط السير / وجهة التوزيع</label>
+                <input
+                  type="text"
+                  value={tripDestination}
+                  onChange={(e) => setTripDestination(e.target.value)}
+                  placeholder="مثال: خط القاهرة - طنطا"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-slate-600 mb-1 font-bold">عداد الخروج (كم) *</label>
+                  <label className="block text-slate-700 font-bold mb-1">عداد البداية (كم) *</label>
                   <input
                     type="number"
                     required
-                    value={logStartKm}
-                    onChange={(e) => setLogStartKm(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono focus:outline-none focus:border-amber-500"
-                    placeholder="67900"
+                    value={tripStartKm}
+                    onChange={(e) => setTripStartKm(parseFloat(e.target.value) || 0)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-900"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 mb-1 font-bold">عداد العودة (كم) *</label>
+                  <label className="block text-slate-700 font-bold mb-1">عداد النهاية (كم) *</label>
                   <input
                     type="number"
                     required
-                    value={logEndKm}
-                    onChange={(e) => setLogEndKm(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono focus:outline-none focus:border-amber-500"
-                    placeholder="68100"
+                    value={tripEndKm}
+                    onChange={(e) => setTripEndKm(parseFloat(e.target.value) || 0)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-900"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1 font-bold">تكلفة الوقود *</label>
+                <label className="block text-slate-700 font-bold mb-1">تكلفة الوقود *</label>
                 <input
                   type="number"
                   required
-                  value={logFuelCost}
-                  onChange={(e) => setLogFuelCost(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-mono font-bold focus:outline-none focus:border-amber-500"
-                  placeholder="950 ج.م"
+                  value={tripFuelCost}
+                  onChange={(e) => setTripFuelCost(parseFloat(e.target.value) || 0)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono font-bold text-emerald-700"
+                  placeholder="850 ج.م"
                 />
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowLogModal(false)}
+                  onClick={() => setShowTripModal(false)}
                   className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200"
                 >
                   إلغاء
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-amber-500 text-white font-extrabold hover:bg-amber-600 shadow"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold shadow"
                 >
-                  حفظ الحركة
+                  حفظ قراءة العداد
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: REGISTER OIL CHANGE */}
+      {showOilChangeModal && selectedVehicleForOil && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+              <Wrench className="text-amber-600" />
+              تسجيل تغيير زيت للسيارة ({selectedVehicleForOil.plateNumber})
+            </h3>
+            <p className="text-xs text-slate-500">
+              سيتم تصفير عداد الزيت وتحديث حالة السيارة إلى (نشطة وممتازة).
+            </p>
+
+            <form onSubmit={handleOilChangeSubmit} className="space-y-3 text-xs">
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between">
+                <span className="text-slate-500">قراءة العداد الحالية:</span>
+                <span className="font-mono font-black text-sky-700">
+                  {selectedVehicleForOil.lastOdometerKm.toLocaleString()} كم
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">تكلفة تغيير الزيت والفلاتر *</label>
+                <input
+                  type="number"
+                  required
+                  value={oilCost}
+                  onChange={(e) => setOilCost(parseFloat(e.target.value) || 0)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono font-bold text-emerald-700"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">مركز الصيانة</label>
+                <input
+                  type="text"
+                  value={oilCenter}
+                  onChange={(e) => setOilCenter(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">تفاصيل وملاحظات الصيانة</label>
+                <input
+                  type="text"
+                  value={oilNotes}
+                  onChange={(e) => setOilNotes(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowOilChangeModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold shadow"
+                >
+                  تأكيد تصفير الإنذار
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: ADD VEHICLE */}
+      {showAddVehicleModal && (
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+              <Truck className="text-amber-600" />
+              إضافة سيارة جديدة لأسطول التوزيع
+            </h3>
+
+            <form onSubmit={handleAddVehicleSubmit} className="space-y-3 text-xs">
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">رقم اللوحة المعدنية *</label>
+                <input
+                  type="text"
+                  required
+                  value={newPlate}
+                  onChange={(e) => setNewPlate(e.target.value)}
+                  placeholder="مثال: أ ب ج 9876"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-amber-700"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">موديل ونوع السيارة *</label>
+                <input
+                  type="text"
+                  required
+                  value={newModel}
+                  onChange={(e) => setNewModel(e.target.value)}
+                  placeholder="مثال: جامبو أيسوزو 5 طن"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">الفرع التابع له</label>
+                  <select
+                    value={newBranch}
+                    onChange={(e: any) => setNewBranch(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold"
+                  >
+                    <option value="EGY">🇪🇬 فرع مصر</option>
+                    <option value="OMN">🇴🇲 فرع عمان</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">عداد الكيلومتر الحالي</label>
+                  <input
+                    type="number"
+                    value={newCurrentKm}
+                    onChange={(e) => setNewCurrentKm(parseFloat(e.target.value) || 0)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono text-slate-900"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">اسم السائق المسند إليه</label>
+                <input
+                  type="text"
+                  value={newDriverName}
+                  onChange={(e) => setNewDriverName(e.target.value)}
+                  placeholder="اسم السائق..."
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddVehicleModal(false)}
+                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold hover:bg-slate-200"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold shadow"
+                >
+                  حفظ السيارة
                 </button>
               </div>
             </form>
