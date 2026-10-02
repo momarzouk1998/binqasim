@@ -690,46 +690,48 @@ export default function FinanceReportsPage() {
                   جدول المساهمة النسبية في إجمالي الأرباح التجارية:
                 </h4>
               </div>
-              <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
-                  <tr>
-                    <th className="p-3.5">اسم الصنف</th>
-                    <th className="p-3.5">إجمالي المبيعات</th>
-                    <th className="p-3.5">التكلفة الواصلة</th>
-                    <th className="p-3.5">صافي الأرباح</th>
-                    <th className="p-3.5">نسبة المساهمة في الأرباح</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {productsProfitability.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50">
-                      <td className="p-3.5 font-bold text-slate-900">{p.name}</td>
-                      <td className="p-3.5 font-mono text-slate-800">
-                        {Math.round(convertAmount(p.totalSalesEGP)).toLocaleString()} {currencySymbol}
-                      </td>
-                      <td className="p-3.5 font-mono text-rose-600">
-                        {Math.round(convertAmount(p.totalSalesEGP - p.totalProfitEGP)).toLocaleString()} {currencySymbol}
-                      </td>
-                      <td className="p-3.5 font-mono font-extrabold text-emerald-700 text-sm">
-                        +{Math.round(convertAmount(p.totalProfitEGP)).toLocaleString()} {currencySymbol}
-                      </td>
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
-                            <div
-                              className="bg-amber-500 h-full rounded-full"
-                              style={{ width: `${p.profitContribution}%` }}
-                            />
-                          </div>
-                          <span className="font-mono font-bold text-slate-700 w-10 text-left">
-                            {p.profitContribution}%
-                          </span>
-                        </div>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-xs min-w-[650px]">
+                  <thead className="bg-slate-50 text-slate-600 border-b border-slate-200 font-bold">
+                    <tr>
+                      <th className="p-3.5">اسم الصنف</th>
+                      <th className="p-3.5">إجمالي المبيعات</th>
+                      <th className="p-3.5">التكلفة الواصلة</th>
+                      <th className="p-3.5">صافي الأرباح</th>
+                      <th className="p-3.5">نسبة المساهمة في الأرباح</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {productsProfitability.map((p) => (
+                      <tr key={p.id} className="hover:bg-slate-50">
+                        <td className="p-3.5 font-bold text-slate-900">{p.name}</td>
+                        <td className="p-3.5 font-mono text-slate-800">
+                          {Math.round(convertAmount(p.totalSalesEGP)).toLocaleString()} {currencySymbol}
+                        </td>
+                        <td className="p-3.5 font-mono text-rose-600">
+                          {Math.round(convertAmount(p.totalSalesEGP - p.totalProfitEGP)).toLocaleString()} {currencySymbol}
+                        </td>
+                        <td className="p-3.5 font-mono font-extrabold text-emerald-700 text-sm">
+                          +{Math.round(convertAmount(p.totalProfitEGP)).toLocaleString()} {currencySymbol}
+                        </td>
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+                              <div
+                                className="bg-amber-500 h-full rounded-full"
+                                style={{ width: `${p.profitContribution}%` }}
+                              />
+                            </div>
+                            <span className="font-mono font-bold text-slate-700 w-10 text-left">
+                              {p.profitContribution}%
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}

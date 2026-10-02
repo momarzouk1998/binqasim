@@ -27,8 +27,8 @@ import {
   UserCheck,
   RotateCcw,
   Sparkles,
-  Search,
-  CheckCircle2
+  CheckCircle2,
+  PhoneCall
 } from 'lucide-react';
 
 interface AppLayoutProps {
@@ -134,50 +134,50 @@ export default function AppLayout({ children }: AppLayoutProps) {
   // Mobile Bottom Bar items
   const bottomNavItems = [
     { title: 'الرئيسية', href: '/', icon: LayoutDashboard },
-    { title: 'الشحنات', href: '/import-shipments', icon: Ship },
+    { title: 'الحاويات', href: '/import-shipments', icon: Ship },
     { title: 'المبيعات', href: '/sales', icon: Receipt },
     { title: 'المخزون', href: '/inventory', icon: Boxes },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col md:flex-row font-sans">
+    <div className="min-h-screen bg-slate-100 text-slate-800 flex flex-col md:flex-row font-sans overflow-x-hidden">
       {/* MOBILE BACKDROP OVERLAY */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* DESKTOP & MOBILE COLLAPSIBLE SIDEBAR */}
+      {/* SIDEBAR (OFF-CANVAS ON MOBILE, STICKY ON DESKTOP) */}
       <aside
-        className={`fixed md:sticky top-0 h-screen z-50 bg-white border-l border-slate-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm ${
+        className={`fixed inset-y-0 right-0 z-50 bg-white border-l border-slate-200 flex flex-col transition-all duration-300 ease-in-out shadow-2xl md:shadow-none md:static md:sticky md:top-0 md:h-screen ${
           isMobileMenuOpen
             ? 'translate-x-0 w-72'
-            : '-translate-x-full md:translate-x-0'
+            : 'translate-x-full md:translate-x-0'
         } ${isSidebarOpen ? 'md:w-72' : 'md:w-20'}`}
       >
         {/* LOGO & BRAND HEADER */}
         <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 overflow-hidden group">
-            <div className="relative w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-0.5 flex-shrink-0 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+          <Link href="/" className="flex items-center gap-2.5 overflow-hidden group">
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 p-0.5 flex-shrink-0 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
               <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center p-1">
                 <Image
                   src="/logo.png"
                   alt="Bin Qasim Logo"
-                  width={38}
-                  height={38}
+                  width={34}
+                  height={34}
                   className="object-contain"
                 />
               </div>
             </div>
             {(isSidebarOpen || isMobileMenuOpen) && (
               <div className="flex flex-col whitespace-nowrap text-right">
-                <span className="font-black text-lg text-slate-900 tracking-tight flex items-center gap-1">
+                <span className="font-black text-base text-slate-900 tracking-tight flex items-center gap-1">
                   شركة بي قاسم
                   <Sparkles size={14} className="text-amber-500" />
                 </span>
-                <span className="text-[11px] text-slate-500 font-bold">
+                <span className="text-[10px] text-slate-500 font-bold">
                   للاستيراد والتصدير والتوزيع
                 </span>
               </div>
@@ -196,7 +196,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileMenuOpen(false)}
-            className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 bg-slate-100"
+            className="md:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-900 bg-slate-100 transition"
           >
             <X size={20} />
           </button>
@@ -204,7 +204,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         {/* BRANCH SELECTOR IN SIDEBAR */}
         {(isSidebarOpen || isMobileMenuOpen) && (
-          <div className="p-3 mx-3 my-2.5 bg-gradient-to-br from-slate-50 to-amber-50/40 rounded-xl border border-slate-200 shadow-sm">
+          <div className="p-3 mx-3 my-2 bg-gradient-to-br from-slate-50 to-amber-50/40 rounded-xl border border-slate-200 shadow-sm">
             <div className="text-[11px] font-bold text-slate-500 mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1">
                 <Building2 size={13} className="text-amber-600" />
@@ -243,7 +243,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                     : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
-                🌐 المجمع
+                🌐 الكل
               </button>
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               >
                 <Icon
                   size={18}
-                  className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-amber-600'}
+                  className={isActive ? 'text-white flex-shrink-0' : 'text-slate-400 group-hover:text-amber-600 flex-shrink-0'}
                 />
                 {(isSidebarOpen || isMobileMenuOpen) && (
                   <span className="flex-1 whitespace-nowrap">{item.title}</span>
@@ -306,7 +306,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               title="إعادة تعيين البيانات الوهمية لعرض الفيديو والشاشات"
             >
               <RotateCcw size={13} className="text-amber-600" />
-              تحديث واستعادة البيانات الوهمية
+              استعادة البيانات النموذجية
             </button>
           </div>
         )}
@@ -327,7 +327,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   <p className="text-xs font-black text-slate-800 truncate hover:text-amber-600 transition">
                     {currentUser.name}
                   </p>
-                  <p className="text-[11px] text-slate-500 truncate font-semibold">{currentUser.title}</p>
+                  <p className="text-[10px] text-slate-500 truncate font-semibold">{currentUser.title}</p>
                 </Link>
               </div>
             )}
@@ -346,14 +346,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 w-full pb-20 md:pb-6">
         {/* TOP NAVBAR HEADER */}
-        <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-4 py-2.5 flex items-center justify-between shadow-sm">
+        <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-3 sm:px-4 py-2.5 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Mobile Toggle Button */}
+            {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none"
+              className="md:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none transition"
               aria-label="القائمة"
             >
               <Menu size={20} />
@@ -361,13 +361,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
             {/* Current Active Branch Indicator */}
             <div className="flex items-center gap-1.5">
-              <span className="text-xs bg-slate-50 text-slate-800 px-3 py-1.5 rounded-xl border border-slate-200 font-extrabold flex items-center gap-1.5 shadow-sm">
+              <span className="text-xs bg-slate-50 text-slate-800 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 font-black flex items-center gap-1.5 shadow-sm">
                 <Globe size={14} className="text-amber-600" />
                 {selectedBranch === 'EGY'
-                  ? '🇪🇬 فرع مصر (EGP)'
+                  ? '🇪🇬 مصر (EGP)'
                   : selectedBranch === 'OMN'
-                  ? '🇴🇲 سلطنة عمان (OMR)'
-                  : '🌐 جميع الفروع الموحدة'}
+                  ? '🇴🇲 عمان (OMR)'
+                  : '🌐 جميع الفروع'}
               </span>
 
               <Link
@@ -381,18 +381,18 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </div>
 
           {/* RIGHT SIDE: LIVE RATES & NOTIFICATION CENTER */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Exchange Rates Live Display */}
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            {/* Exchange Rates Live Display (Desktop & Tablet) */}
             <Link
               href="/settings"
-              className="hidden sm:flex items-center gap-2 bg-slate-50 hover:bg-amber-50/50 px-3 py-1.5 rounded-xl border border-slate-200 text-xs transition shadow-sm"
+              className="hidden sm:flex items-center gap-2 bg-slate-50 hover:bg-amber-50/50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs transition shadow-sm"
               title="اضغط لتعديل أسعار الصرف"
             >
               <DollarSign size={14} className="text-emerald-600 font-bold" />
-              <span className="text-slate-500 font-bold">أسعار الصرف:</span>
-              <span className="text-emerald-700 font-mono font-black">$1 = {usdToEgpRate} ج.م</span>
+              <span className="text-slate-500 font-bold">الصرف:</span>
+              <span className="text-emerald-700 font-mono font-black">$1={usdToEgpRate} ج.م</span>
               <span className="text-slate-300">|</span>
-              <span className="text-sky-700 font-mono font-black">$1 = {usdToOmrRate} ر.ع</span>
+              <span className="text-sky-700 font-mono font-black">$1={usdToOmrRate} ر.ع</span>
             </Link>
 
             {/* Notifications Dropdown Button */}
@@ -412,7 +412,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
               {/* NOTIFICATION POPUP */}
               {showNotifications && (
-                <div className="absolute left-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 space-y-3 animate-in fade-in duration-200">
+                <div className="absolute left-0 mt-2 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 space-y-3 animate-in fade-in duration-200">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <h4 className="font-black text-xs text-slate-900 flex items-center gap-1.5">
                       <Bell size={14} className="text-amber-600" />
@@ -478,12 +478,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* PAGE CONTENT BODY */}
-        <main className="flex-1 p-3.5 sm:p-5 md:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3 sm:p-5 md:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
 
-        {/* FIXED MOBILE BOTTOM NAVIGATION BAR (FOR SMARTPHONES) */}
-        <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-3 z-40 md:hidden flex items-center justify-around shadow-lg">
+        {/* FIXED MOBILE BOTTOM NAVIGATION BAR */}
+        <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 py-1.5 px-2 z-40 md:hidden flex items-center justify-around shadow-2xl">
           {bottomNavItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -491,39 +491,39 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center py-1 px-3 rounded-xl transition ${
-                  isActive ? 'text-amber-600 font-extrabold' : 'text-slate-500 hover:text-slate-800'
+                className={`flex flex-col items-center py-1 px-2.5 rounded-xl transition ${
+                  isActive ? 'text-amber-600 font-extrabold scale-105' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                <Icon size={20} className={isActive ? 'text-amber-600' : 'text-slate-400'} />
-                <span className="text-[10px] mt-0.5">{item.title}</span>
+                <Icon size={19} className={isActive ? 'text-amber-600' : 'text-slate-400'} />
+                <span className="text-[10px] mt-0.5 font-bold">{item.title}</span>
               </Link>
             );
           })}
 
           <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="flex flex-col items-center py-1 px-3 rounded-xl text-slate-500 hover:text-slate-800"
+            className="flex flex-col items-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition"
           >
-            <Menu size={20} className="text-slate-400" />
-            <span className="text-[10px] mt-0.5">المزيد</span>
+            <Menu size={19} className="text-slate-400" />
+            <span className="text-[10px] mt-0.5 font-bold">القائمة</span>
           </button>
         </div>
       </div>
 
       {/* CONFIRMATION MODAL: RESET DEMO DATA */}
       {showResetConfirm && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl border border-slate-200">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95">
             <div className="text-center space-y-2">
               <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 mx-auto flex items-center justify-center">
                 <RotateCcw size={24} />
               </div>
               <h3 className="font-black text-base text-slate-900">
-                استعادة البيانات النموذجية الكاملة؟
+                استعادة البيانات النموذجية؟
               </h3>
-              <p className="text-xs text-slate-600">
-                سيتم ملء النظام ببيانات واقعية شاملة (شحنات حاويات، فواتير، عملاء، سيارات، ومخزون) لتصوير وعرض البرنامج بأعلى احترافية.
+              <p className="text-xs text-slate-600 leading-relaxed">
+                سيتم ملء النظام ببيانات واقعية شاملة (شحنات حاويات، فواتير، عملاء، أسطول، ومخزون) جاهزة للتصوير والعرض.
               </p>
             </div>
 

@@ -158,30 +158,30 @@ export default function FleetPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* PAGE HEADER */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3 sm:pb-4">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-              <Truck className="text-amber-600" />
-              إدارة أسطول سيارات التوزيع وتكلفة الكيلومتر
+            <h1 className="text-lg sm:text-2xl font-black text-slate-900 flex items-center gap-2">
+              <Truck className="text-amber-600 flex-shrink-0" size={24} />
+              <span>إدارة أسطول سيارات التوزيع وتكلفة الكيلومتر</span>
             </h1>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-[11px] sm:text-xs text-slate-500 mt-1">
               متابعة قراءات عداد الخروج والرجوع، استهلاك الوقود، ونظام إنذار تغيير الزيت التلقائي كل 1500 كم.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <button
               onClick={() => handleOpenTripModal()}
-              className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition shadow-md shadow-amber-500/20"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition shadow-md shadow-amber-500/20"
             >
               <Gauge size={16} />
-              + تسجيل حركة عداد ورحلة
+              + تسجيل رحلة
             </button>
             <button
               onClick={() => setShowAddVehicleModal(true)}
-              className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center gap-1 shadow-sm transition"
+              className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center justify-center gap-1 shadow-sm transition"
             >
               <Plus size={16} />
               إضافة سيارة
@@ -191,17 +191,17 @@ export default function FleetPage() {
 
         {/* OIL CHANGE ALARM BANNER (CRITICAL 1500 KM ALARM) */}
         {urgentVehiclesCount > 0 && (
-          <div className="glass-panel p-4 border-rose-300 bg-rose-50/70 flex items-center justify-between flex-wrap gap-3 animate-pulse shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-200">
-                <AlertTriangle size={24} />
+          <div className="glass-panel p-3.5 sm:p-4 border-rose-300 bg-rose-50/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-pulse shadow-sm">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-200 flex-shrink-0">
+                <AlertTriangle size={22} />
               </div>
               <div>
-                <h4 className="font-extrabold text-sm text-rose-800">
+                <h4 className="font-extrabold text-xs sm:text-sm text-rose-800">
                   تنبيه عاجل: {urgentVehiclesCount} سيارة تجاوزت 1,500 كم وبحاجة لتغيير الزيت فوراً!
                 </h4>
-                <p className="text-xs text-rose-600 mt-0.5">
-                  تجاوز المسافة المسموحة يؤثر على عمر المحرك، يرجى تغيير الزيت وتصفير العداد للحفاظ على كفاءة الأسطول.
+                <p className="text-[11px] sm:text-xs text-rose-600 mt-0.5">
+                  تجاوز المسافة يؤثر على المحرك، يرجى تغيير الزيت وتصفير العداد.
                 </p>
               </div>
             </div>
@@ -209,48 +209,48 @@ export default function FleetPage() {
         )}
 
         {/* TABS */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-1 overflow-x-auto">
+        <div className="flex items-center gap-1.5 sm:gap-2 border-b border-slate-200 pb-1 overflow-x-auto">
           <button
             onClick={() => setActiveTab('vehicles')}
-            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-1.5 border-b-2 -mb-[5px] whitespace-nowrap ${
               activeTab === 'vehicles'
                 ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
-            <Truck size={16} />
-            أسطول السيارات ({vehicles.length})
+            <Truck size={15} />
+            الأسطول ({vehicles.length})
           </button>
 
           <button
             onClick={() => setActiveTab('trips')}
-            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-1.5 border-b-2 -mb-[5px] whitespace-nowrap ${
               activeTab === 'trips'
                 ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
-            <Gauge size={16} />
-            سجل رحلات العداد والوقود ({tripLogs.length})
+            <Gauge size={15} />
+            سجل الرحلات ({tripLogs.length})
           </button>
 
           <button
             onClick={() => setActiveTab('maintenance')}
-            className={`px-4 py-2.5 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-2 border-b-2 -mb-[5px] whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2 text-xs font-extrabold rounded-t-xl transition-all flex items-center gap-1.5 border-b-2 -mb-[5px] whitespace-nowrap ${
               activeTab === 'maintenance'
                 ? 'border-amber-500 text-amber-700 bg-white shadow-sm'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
-            <Wrench size={16} />
-            سجل الصيانة وتغيير الزيت ({maintenanceLogs.length})
+            <Wrench size={15} />
+            سجل الصيانة ({maintenanceLogs.length})
           </button>
         </div>
 
         {/* TAB 1: VEHICLES CARDS GRID */}
         {activeTab === 'vehicles' && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {filteredVehicles.map((v) => {
                 const drivenSinceOil = v.lastOdometerKm - v.lastOilChangeKm;
                 const isAlert = drivenSinceOil >= 1500;
@@ -259,53 +259,53 @@ export default function FleetPage() {
                 return (
                   <div
                     key={v.id}
-                    className={`glass-panel p-5 space-y-3.5 relative overflow-hidden transition-all duration-200 ${
+                    className={`glass-panel p-4 sm:p-5 space-y-3 relative overflow-hidden transition-all duration-200 ${
                       isAlert
                         ? 'border-rose-400 bg-rose-50/30 ring-1 ring-rose-400'
                         : 'border-slate-200 hover:border-amber-300'
                     }`}
                   >
                     {/* CARD HEADER */}
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-2">
                       <div>
-                        <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1">
-                          {v.branch === 'EGY' ? '🇪🇬 فرع مصر' : '🇴🇲 فرع عمان'}
+                        <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 flex items-center gap-1">
+                          {v.branch === 'EGY' ? '🇪🇬 مصر' : '🇴🇲 عمان'}
                         </span>
-                        <h3 className="font-black text-base text-slate-900 mt-0.5">{v.model}</h3>
+                        <h3 className="font-black text-sm sm:text-base text-slate-900 mt-0.5">{v.model}</h3>
                         <p className="text-xs font-mono font-extrabold text-amber-700 mt-0.5">
                           {v.plateNumber}
                         </p>
                       </div>
 
                       {isAlert ? (
-                        <span className="bg-rose-100 text-rose-800 border border-rose-300 px-2.5 py-1 rounded-full text-[10px] font-black flex items-center gap-1 animate-pulse">
-                          <AlertTriangle size={12} />
-                          تغيير زيت فوراً!
+                        <span className="bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 animate-pulse flex-shrink-0">
+                          <AlertTriangle size={11} />
+                          تغيير زيت!
                         </span>
                       ) : (
-                        <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[10px] font-bold">
+                        <span className="bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0">
                           جاهزة للعمل
                         </span>
                       )}
                     </div>
 
                     {/* VEHICLE SPECS & ODOMETER */}
-                    <div className="space-y-2 text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <div className="space-y-1.5 sm:space-y-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
                       <div className="flex justify-between">
-                        <span className="text-slate-500">السائق المسند:</span>
+                        <span className="text-slate-500">السائق:</span>
                         <span className="font-bold text-slate-800">{v.driverName}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">قراءة العداد الحالية:</span>
+                        <span className="text-slate-500">العداد:</span>
                         <span className="font-mono font-bold text-sky-700">
                           {v.lastOdometerKm.toLocaleString()} كم
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500">المقطوع منذ آخر تغيير زيت:</span>
+                        <span className="text-slate-500">المقطوع منذ الصيانة:</span>
                         <span
                           className={`font-mono font-black ${
-                            isAlert ? 'text-rose-600 text-sm' : 'text-amber-700'
+                            isAlert ? 'text-rose-600' : 'text-amber-700'
                           }`}
                         >
                           {drivenSinceOil.toLocaleString()} / 1,500 كم
@@ -313,7 +313,7 @@ export default function FleetPage() {
                       </div>
 
                       {/* PROGRESS BAR TO 1500 KM */}
-                      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-1.5">
+                      <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-1">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${
                             isAlert
@@ -328,14 +328,14 @@ export default function FleetPage() {
                     </div>
 
                     {/* CARD ACTIONS */}
-                    <div className="pt-2 flex items-center gap-2">
+                    <div className="pt-1 flex items-center gap-2">
                       {isAlert ? (
                         <button
                           onClick={() => handleOpenOilModal(v)}
-                          className="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition shadow"
+                          className="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-2 rounded-xl flex items-center justify-center gap-1.5 transition shadow"
                         >
                           <Wrench size={14} />
-                          تسجيل تغيير زيت وتصفير الإنذار
+                          تغيير زيت وتصفير العداد
                         </button>
                       ) : (
                         <>
@@ -349,9 +349,9 @@ export default function FleetPage() {
                           <button
                             onClick={() => handleOpenOilModal(v)}
                             className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700"
-                            title="تسجيل صيانة وقائية"
+                            title="صيانة وقائية"
                           >
-                            <Wrench size={15} />
+                            <Wrench size={14} />
                           </button>
                         </>
                       )}
@@ -366,58 +366,54 @@ export default function FleetPage() {
         {/* TAB 2: TRIP & ODOMETER LOGS */}
         {activeTab === 'trips' && (
           <div className="space-y-4">
-            <div className="glass-panel p-4 flex items-center justify-between">
+            <div className="glass-panel p-3.5 sm:p-4 flex items-center justify-between">
               <div>
-                <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
-                  <Gauge className="text-amber-600" size={18} />
-                  سجل قراءات عداد الخروج والرجوع والوقود وتكلفة الكيلومتر
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
+                  <Gauge className="text-amber-600" size={17} />
+                  سجل قراءات عداد الخروج والرجوع والوقود
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  حساب تكلفة الكيلو متر تلقائياً (الوقود ÷ المسافة المقطوعة) لكل رحلة
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  حساب تكلفة الكيلو متر تلقائياً لكل رحلة
                 </p>
               </div>
-              <button
-                onClick={() => handleOpenTripModal()}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow"
-              >
-                + إضافة رحلة
-              </button>
             </div>
 
             <div className="glass-panel overflow-hidden">
-              <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
-                  <tr>
-                    <th className="p-3.5">السيارة والسائق</th>
-                    <th className="p-3.5">خط السير والوجهة</th>
-                    <th className="p-3.5">التاريخ</th>
-                    <th className="p-3.5">عداد البداية</th>
-                    <th className="p-3.5">عداد النهاية</th>
-                    <th className="p-3.5">المسافة</th>
-                    <th className="p-3.5">تكلفة الوقود</th>
-                    <th className="p-3.5 font-bold text-amber-700">تكلفة الكيلو</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {tripLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-50">
-                      <td className="p-3.5 font-bold text-slate-800">
-                        <p className="font-mono text-slate-900">{log.plateNumber}</p>
-                        <p className="text-[10px] text-slate-500">{log.driverName}</p>
-                      </td>
-                      <td className="p-3.5 text-slate-700 font-medium">{log.destination}</td>
-                      <td className="p-3.5 font-mono text-slate-500">{log.date}</td>
-                      <td className="p-3.5 font-mono text-slate-700">{log.startKm.toLocaleString()} كم</td>
-                      <td className="p-3.5 font-mono text-slate-700">{log.endKm.toLocaleString()} كم</td>
-                      <td className="p-3.5 font-mono font-bold text-sky-700">{log.distanceKm} كم</td>
-                      <td className="p-3.5 font-mono text-amber-700 font-bold">{log.fuelCost.toLocaleString()}</td>
-                      <td className="p-3.5 font-mono font-black text-emerald-700 text-sm">
-                        {log.costPerKm.toFixed(2)}
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-xs min-w-[600px]">
+                  <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                    <tr>
+                      <th className="p-3">السيارة والسائق</th>
+                      <th className="p-3">خط السير والوجهة</th>
+                      <th className="p-3">التاريخ</th>
+                      <th className="p-3">عداد البداية</th>
+                      <th className="p-3">عداد النهاية</th>
+                      <th className="p-3">المسافة</th>
+                      <th className="p-3">تكلفة الوقود</th>
+                      <th className="p-3 font-bold text-amber-700">تكلفة الكيلو</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {tripLogs.map((log) => (
+                      <tr key={log.id} className="hover:bg-slate-50">
+                        <td className="p-3 font-bold text-slate-800">
+                          <p className="font-mono text-slate-900">{log.plateNumber}</p>
+                          <p className="text-[10px] text-slate-500">{log.driverName}</p>
+                        </td>
+                        <td className="p-3 text-slate-700 font-medium">{log.destination}</td>
+                        <td className="p-3 font-mono text-slate-500">{log.date}</td>
+                        <td className="p-3 font-mono text-slate-700">{log.startKm.toLocaleString()} كم</td>
+                        <td className="p-3 font-mono text-slate-700">{log.endKm.toLocaleString()} كم</td>
+                        <td className="p-3 font-mono font-bold text-sky-700">{log.distanceKm} كم</td>
+                        <td className="p-3 font-mono text-amber-700 font-bold">{log.fuelCost.toLocaleString()}</td>
+                        <td className="p-3 font-mono font-black text-emerald-700 text-xs sm:text-sm">
+                          {log.costPerKm.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -425,52 +421,47 @@ export default function FleetPage() {
         {/* TAB 3: MAINTENANCE LOGS */}
         {activeTab === 'maintenance' && (
           <div className="space-y-4">
-            <div className="glass-panel p-4">
-              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
-                <Wrench className="text-amber-600" size={18} />
+            <div className="glass-panel p-3.5 sm:p-4">
+              <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
+                <Wrench className="text-amber-600" size={17} />
                 سجل صيانة الزيوت والفلاتر وتصفير العداد
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                توثيق جميع عمليات الصيانة وتغيير الزيت وتكلفتها
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                توثيق جميع عمليات الصيانة وتغيير الزيت
               </p>
             </div>
 
             <div className="glass-panel overflow-hidden">
-              <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
-                  <tr>
-                    <th className="p-3.5">السيارة</th>
-                    <th className="p-3.5">نوع الصيانة</th>
-                    <th className="p-3.5">قراءة العداد عند الصيانة</th>
-                    <th className="p-3.5">مركز الخدمة</th>
-                    <th className="p-3.5">التكلفة</th>
-                    <th className="p-3.5">التاريخ</th>
-                    <th className="p-3.5">ملاحظات</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {maintenanceLogs.map((m) => (
-                    <tr key={m.id} className="hover:bg-slate-50">
-                      <td className="p-3.5 font-mono font-bold text-amber-700">{m.plateNumber}</td>
-                      <td className="p-3.5 font-bold text-slate-800">{m.serviceType}</td>
-                      <td className="p-3.5 font-mono text-sky-700">{m.serviceKm.toLocaleString()} كم</td>
-                      <td className="p-3.5 text-slate-700">{m.centerName}</td>
-                      <td className="p-3.5 font-mono font-bold text-emerald-700">
-                        {m.cost.toLocaleString()} ج.م
-                      </td>
-                      <td className="p-3.5 font-mono text-slate-500">{m.date}</td>
-                      <td className="p-3.5 text-slate-500">{m.notes}</td>
-                    </tr>
-                  ))}
-                  {maintenanceLogs.length === 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-xs min-w-[600px]">
+                  <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                     <tr>
-                      <td colSpan={7} className="text-center py-6 text-slate-400">
-                        سجل الصيانة فارغ، يتم إدراج السجلات عند تصفير إنذار الزيت أو الصيانة الدورية.
-                      </td>
+                      <th className="p-3">السيارة</th>
+                      <th className="p-3">نوع الصيانة</th>
+                      <th className="p-3">قراءة العداد</th>
+                      <th className="p-3">مركز الخدمة</th>
+                      <th className="p-3">التكلفة</th>
+                      <th className="p-3">التاريخ</th>
+                      <th className="p-3">ملاحظات</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {maintenanceLogs.map((m) => (
+                      <tr key={m.id} className="hover:bg-slate-50">
+                        <td className="p-3 font-mono font-bold text-amber-700">{m.plateNumber}</td>
+                        <td className="p-3 font-bold text-slate-800">{m.serviceType}</td>
+                        <td className="p-3 font-mono text-sky-700">{m.serviceKm.toLocaleString()} كم</td>
+                        <td className="p-3 text-slate-700">{m.centerName}</td>
+                        <td className="p-3 font-mono font-bold text-emerald-700">
+                          {m.cost.toLocaleString()} ج.م
+                        </td>
+                        <td className="p-3 font-mono text-slate-500">{m.date}</td>
+                        <td className="p-3 text-slate-500">{m.notes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         )}
@@ -478,9 +469,9 @@ export default function FleetPage() {
 
       {/* MODAL 1: ADD TRIP & ODOMETER LOG */}
       {showTripModal && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
-            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-2xl border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <h3 className="font-black text-base sm:text-lg text-slate-900 flex items-center gap-2">
               <Gauge className="text-amber-600" />
               تسجيل رحلة وقراءة عداد جديدة
             </h3>
@@ -499,7 +490,7 @@ export default function FleetPage() {
                       setTripEndKm(veh.lastOdometerKm + 150);
                     }
                   }}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                 >
                   {vehicles.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -515,7 +506,7 @@ export default function FleetPage() {
                   type="text"
                   value={tripDriver}
                   onChange={(e) => setTripDriver(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 
@@ -526,7 +517,7 @@ export default function FleetPage() {
                   value={tripDestination}
                   onChange={(e) => setTripDestination(e.target.value)}
                   placeholder="مثال: خط القاهرة - طنطا"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 
@@ -538,7 +529,7 @@ export default function FleetPage() {
                     required
                     value={tripStartKm}
                     onChange={(e) => setTripStartKm(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-1.5 font-mono font-bold text-slate-900"
                   />
                 </div>
 
@@ -549,7 +540,7 @@ export default function FleetPage() {
                     required
                     value={tripEndKm}
                     onChange={(e) => setTripEndKm(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-1.5 font-mono font-bold text-slate-900"
                   />
                 </div>
               </div>
@@ -561,7 +552,7 @@ export default function FleetPage() {
                   required
                   value={tripFuelCost}
                   onChange={(e) => setTripFuelCost(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono font-bold text-emerald-700"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-emerald-700"
                   placeholder="850 ج.م"
                 />
               </div>
@@ -589,17 +580,17 @@ export default function FleetPage() {
       {/* MODAL 2: REGISTER OIL CHANGE */}
       {showOilChangeModal && selectedVehicleForOil && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
-            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+          <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-base sm:text-lg text-slate-900 flex items-center gap-2">
               <Wrench className="text-amber-600" />
-              تسجيل تغيير زيت للسيارة ({selectedVehicleForOil.plateNumber})
+              تسجيل تغيير زيت ({selectedVehicleForOil.plateNumber})
             </h3>
             <p className="text-xs text-slate-500">
-              سيتم تصفير عداد الزيت وتحديث حالة السيارة إلى (نشطة وممتازة).
+              سيتم تصفير عداد الزيت وتحديث حالة السيارة إلى (جاهزة للعمل).
             </p>
 
             <form onSubmit={handleOilChangeSubmit} className="space-y-3 text-xs">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between">
+              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between">
                 <span className="text-slate-500">قراءة العداد الحالية:</span>
                 <span className="font-mono font-black text-sky-700">
                   {selectedVehicleForOil.lastOdometerKm.toLocaleString()} كم
@@ -607,13 +598,13 @@ export default function FleetPage() {
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">تكلفة تغيير الزيت والفلاتر *</label>
+                <label className="block text-slate-700 font-bold mb-1">تكلفة الصيانة والزيوت *</label>
                 <input
                   type="number"
                   required
                   value={oilCost}
                   onChange={(e) => setOilCost(parseFloat(e.target.value) || 0)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono font-bold text-emerald-700"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono font-bold text-emerald-700"
                 />
               </div>
 
@@ -623,17 +614,17 @@ export default function FleetPage() {
                   type="text"
                   value={oilCenter}
                   onChange={(e) => setOilCenter(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">تفاصيل وملاحظات الصيانة</label>
+                <label className="block text-slate-700 font-bold mb-1">تفاصيل الصيانة</label>
                 <input
                   type="text"
                   value={oilNotes}
                   onChange={(e) => setOilNotes(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 
@@ -660,10 +651,10 @@ export default function FleetPage() {
       {/* MODAL 3: ADD VEHICLE */}
       {showAddVehicleModal && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl border border-slate-200">
-            <h3 className="font-black text-lg text-slate-900 flex items-center gap-2">
+          <div className="bg-white rounded-2xl w-full max-w-md p-4 sm:p-6 space-y-4 shadow-2xl border border-slate-200">
+            <h3 className="font-black text-base sm:text-lg text-slate-900 flex items-center gap-2">
               <Truck className="text-amber-600" />
-              إضافة سيارة جديدة لأسطول التوزيع
+              إضافة سيارة جديدة
             </h3>
 
             <form onSubmit={handleAddVehicleSubmit} className="space-y-3 text-xs">
@@ -675,54 +666,54 @@ export default function FleetPage() {
                   value={newPlate}
                   onChange={(e) => setNewPlate(e.target.value)}
                   placeholder="مثال: أ ب ج 9876"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-bold text-amber-700"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-bold text-amber-700"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">موديل ونوع السيارة *</label>
+                <label className="block text-slate-700 font-bold mb-1">نوع وموديل السيارة *</label>
                 <input
                   type="text"
                   required
                   value={newModel}
                   onChange={(e) => setNewModel(e.target.value)}
                   placeholder="مثال: جامبو أيسوزو 5 طن"
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">الفرع التابع له</label>
+                  <label className="block text-slate-700 font-bold mb-1">الفرع</label>
                   <select
                     value={newBranch}
                     onChange={(e: any) => setNewBranch(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900 font-bold"
                   >
-                    <option value="EGY">🇪🇬 فرع مصر</option>
-                    <option value="OMN">🇴🇲 فرع عمان</option>
+                    <option value="EGY">🇪🇬 مصر</option>
+                    <option value="OMN">🇴🇲 عمان</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">عداد الكيلومتر الحالي</label>
+                  <label className="block text-slate-700 font-bold mb-1">عداد الكيلومتر</label>
                   <input
                     type="number"
                     value={newCurrentKm}
                     onChange={(e) => setNewCurrentKm(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-mono text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-mono text-slate-900"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">اسم السائق المسند إليه</label>
+                <label className="block text-slate-700 font-bold mb-1">اسم السائق</label>
                 <input
                   type="text"
                   value={newDriverName}
                   onChange={(e) => setNewDriverName(e.target.value)}
                   placeholder="اسم السائق..."
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900"
                 />
               </div>
 

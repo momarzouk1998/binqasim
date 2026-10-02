@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import AppLayout from '@/components/layout/AppLayout';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
@@ -13,23 +13,14 @@ import {
   AlertTriangle,
   Users,
   Receipt,
-  ArrowUpRight,
-  ArrowDownLeft,
   ChevronLeft,
   PieChart,
-  Plus,
-  Clock,
-  Sparkles,
-  CheckCircle2,
-  Calendar,
-  Globe
+  Plus
 } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
   Area,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -49,9 +40,6 @@ export default function DashboardPage() {
     shipments,
     invoices,
   } = useApp();
-
-  // Helper for multi-currency display
-  const currencySymbol = selectedBranch === 'OMN' ? 'ر.ع' : 'ج.م';
 
   // 1. Filtered or branch-specific calculations
   const totalStockValueUSD = products.reduce(
@@ -78,11 +66,6 @@ export default function DashboardPage() {
     (v) => v.lastOdometerKm - v.lastOilChangeKm >= 1500
   );
 
-  // In-transit / active shipments
-  const activeShipments = shipments.filter(
-    (s) => s.status === 'IN_TRANSIT' || s.status === 'ORDERED'
-  );
-
   // Recent 4 sales invoices
   const recentInvoices = invoices.slice(0, 4);
 
@@ -100,41 +83,41 @@ export default function DashboardPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* EXECUTIVE HERO BANNER */}
-        <div className="glass-panel p-5 sm:p-7 relative overflow-hidden bg-gradient-to-r from-amber-500/15 via-white to-sky-500/10 border-amber-200 shadow-sm">
-          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="glass-panel p-4 sm:p-7 relative overflow-hidden bg-gradient-to-r from-amber-500/15 via-white to-sky-500/10 border-amber-200 shadow-sm">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs bg-amber-500 text-white font-black px-3 py-1 rounded-full shadow-sm">
-                  شركة بي قاسم للاستيراد والتصدير والتوزيع
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span className="text-[11px] sm:text-xs bg-amber-500 text-white font-black px-2.5 sm:px-3 py-1 rounded-full shadow-sm">
+                  شركة بي قاسم للاستيراد والتصدير
                 </span>
-                <span className="text-xs bg-white text-slate-700 font-bold px-2.5 py-1 rounded-full border border-slate-200">
-                  فروع مصر وسلطنة عمان
+                <span className="text-[11px] sm:text-xs bg-white text-slate-700 font-bold px-2 sm:px-2.5 py-1 rounded-full border border-slate-200">
+                  فروع مصر وعمان
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black text-slate-900 mt-2.5">
-                لوحة المؤشرات والتحكم التنفيذية الشاملة
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mt-2">
+                لوحة المؤشرات والتحكم التنفيذية
               </h1>
-              <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
-                متابعة حركة شحن الحاويات من فيتنام وإندونيسيا، تكلفة الطن والكيلو واصل للمخازن، أسطول التوزيع، الفواتير والأقساط والتحصيلات النقدية.
+              <p className="text-[11px] sm:text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                متابعة حركة شحن الحاويات من فيتنام وإندونيسيا، تكلفة الطن والكيلو واصل للمخازن، أسطول التوزيع، وفواتير المبيعات.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 pt-1 sm:pt-0">
               <Link
                 href="/sales"
-                className="bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-1.5"
+                className="w-full sm:w-auto text-center bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1.5"
               >
                 <Receipt size={16} />
-                + فاتورة مبيعات جديدة
+                + فاتورة جديدة
               </Link>
               <Link
                 href="/import-shipments"
-                className="bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-1.5"
+                className="w-full sm:w-auto text-center bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-1.5"
               >
                 <Ship size={16} />
-                حساب شحنة وحاوية
+                حساب الحاويات
               </Link>
             </div>
           </div>
@@ -142,23 +125,23 @@ export default function DashboardPage() {
 
         {/* OIL CHANGE ALERT BANNER IF APPLICABLE (1500 KM ALARM) */}
         {urgentVehicles.length > 0 && (
-          <div className="bg-rose-50 border border-rose-300 p-4 rounded-2xl flex items-center justify-between flex-wrap gap-3 shadow-sm animate-pulse">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-300">
-                <AlertTriangle size={22} />
+          <div className="bg-rose-50 border border-rose-300 p-3.5 sm:p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm animate-pulse">
+            <div className="flex items-start sm:items-center gap-3">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-rose-100 text-rose-700 border border-rose-300 flex-shrink-0">
+                <AlertTriangle size={20} />
               </div>
               <div>
-                <h4 className="font-extrabold text-sm text-rose-800">
-                  تنبيه هام لصيانة الأسطول: {urgentVehicles.length} سيارة تجاوزت الحد الأقصى لتغيير الزيت (1,500 كم)!
+                <h4 className="font-extrabold text-xs sm:text-sm text-rose-800">
+                  تنبيه صيانة الأسطول: {urgentVehicles.length} سيارة تجاوزت 1,500 كم!
                 </h4>
-                <p className="text-xs text-rose-700 mt-0.5">
+                <p className="text-[11px] sm:text-xs text-rose-700 mt-0.5">
                   السيارة: <span className="font-bold font-mono">{urgentVehicles[0].model} ({urgentVehicles[0].plateNumber})</span> قطعت {urgentVehicles[0].lastOdometerKm - urgentVehicles[0].lastOilChangeKm} كم منذ آخر صيانة.
                 </p>
               </div>
             </div>
             <Link
               href="/fleet"
-              className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition shadow"
+              className="w-full sm:w-auto text-center bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl transition shadow flex-shrink-0"
             >
               تسجيل صيانة الآن
             </Link>
@@ -166,20 +149,20 @@ export default function DashboardPage() {
         )}
 
         {/* TOP 4 EXECUTIVE KPIS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* INVENTORY VALUATION CARD */}
-          <div className="glass-panel p-5 glass-panel-hover border-sky-200">
+          <div className="glass-panel p-4 sm:p-5 glass-panel-hover border-sky-200">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500">تقييم المخزون المتاح (فحم وتعبئة)</span>
-              <div className="p-2.5 rounded-xl bg-sky-50 text-sky-600">
-                <Boxes size={20} />
+              <span className="text-xs font-bold text-slate-500">تقييم المخزون المتاح</span>
+              <div className="p-2 rounded-xl bg-sky-50 text-sky-600">
+                <Boxes size={18} />
               </div>
             </div>
-            <div className="text-2xl font-black text-slate-900 font-mono mt-3">
+            <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono mt-2 sm:mt-3">
               ${Math.round(totalStockValueUSD).toLocaleString()} USD
             </div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2 border-t border-slate-100 font-medium">
-              <span>ما يعادله بالمحلي:</span>
+            <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-2 border-t border-slate-100 font-medium">
+              <span>بالمحلي:</span>
               <span className="font-mono text-sky-700 font-extrabold">
                 {selectedBranch === 'OMN'
                   ? `${Math.round(totalStockValueOMR).toLocaleString()} ر.ع`
@@ -189,18 +172,18 @@ export default function DashboardPage() {
           </div>
 
           {/* CUSTOMER DEBTS RECEIVABLES CARD */}
-          <div className="glass-panel p-5 glass-panel-hover border-amber-200">
+          <div className="glass-panel p-4 sm:p-5 glass-panel-hover border-amber-200">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500">ديون وتحصيلات العملاء</span>
-              <div className="p-2.5 rounded-xl bg-amber-50 text-amber-600">
-                <TrendingUp size={20} />
+              <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
+                <TrendingUp size={18} />
               </div>
             </div>
-            <div className="text-2xl font-black text-amber-600 font-mono mt-3">
+            <div className="text-xl sm:text-2xl font-black text-amber-600 font-mono mt-2 sm:mt-3">
               {totalDebtsEGP.toLocaleString()} ج.م
             </div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2 border-t border-slate-100 font-medium">
-              <span>فرع عمان (OMR):</span>
+            <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-2 border-t border-slate-100 font-medium">
+              <span>فرع عمان:</span>
               <span className="font-mono text-amber-700 font-extrabold">
                 {totalDebtsOMR.toLocaleString()} ر.ع
               </span>
@@ -208,64 +191,64 @@ export default function DashboardPage() {
           </div>
 
           {/* FOREIGN SUPPLIERS PAYABLES CARD */}
-          <div className="glass-panel p-5 glass-panel-hover border-rose-200">
+          <div className="glass-panel p-4 sm:p-5 glass-panel-hover border-rose-200">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-500">مستحقات الموردين بالخارج</span>
-              <div className="p-2.5 rounded-xl bg-rose-50 text-rose-600">
-                <Ship size={20} />
+              <div className="p-2 rounded-xl bg-rose-50 text-rose-600">
+                <Ship size={18} />
               </div>
             </div>
-            <div className="text-2xl font-black text-rose-600 font-mono mt-3">
+            <div className="text-xl sm:text-2xl font-black text-rose-600 font-mono mt-2 sm:mt-3">
               ${totalPayablesUSD.toLocaleString()} USD
             </div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2 border-t border-slate-100 font-medium">
+            <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-2 border-t border-slate-100 font-medium">
               <span>فيتنام وإندونيسيا:</span>
               <span className="text-xs text-rose-600 font-bold">تحويلات LC/TT</span>
             </div>
           </div>
 
           {/* FLEET EFFICIENCY CARD */}
-          <div className="glass-panel p-5 glass-panel-hover border-emerald-200">
+          <div className="glass-panel p-4 sm:p-5 glass-panel-hover border-emerald-200">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-500">متوسط تكلفة الكيلو (السيارات)</span>
-              <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
-                <Truck size={20} />
+              <span className="text-xs font-bold text-slate-500">متوسط تكلفة الكيلو (الأسطول)</span>
+              <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
+                <Truck size={18} />
               </div>
             </div>
-            <div className="text-2xl font-black text-emerald-600 font-mono mt-3">
+            <div className="text-xl sm:text-2xl font-black text-emerald-600 font-mono mt-2 sm:mt-3">
               4.78 ج.م / كم
             </div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mt-2.5 pt-2 border-t border-slate-100 font-medium">
-              <span>شامل الوقود والزيوت:</span>
-              <span className="text-emerald-700 font-bold">كفاءة تشغيل ممتازة</span>
+            <div className="flex items-center justify-between text-xs text-slate-500 mt-2 pt-2 border-t border-slate-100 font-medium">
+              <span>شامل الوقود والصيانة:</span>
+              <span className="text-emerald-700 font-bold">ممتاز</span>
             </div>
           </div>
         </div>
 
         {/* FINANCIAL PERFORMANCE CHART & INCOMING SHIPMENTS */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* SALES VS LANDED COST MONTHLY AREA CHART */}
-          <div className="lg:col-span-2 glass-panel p-5 space-y-4">
+          <div className="lg:col-span-2 glass-panel p-4 sm:p-5 space-y-3 sm:space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
-                <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
                   <TrendingUp className="text-amber-600" size={18} />
-                  مؤشر الإيرادات مقابل التكلفة الواصلة وصافي الربح
+                  مؤشر الإيرادات وصافي الربح الشهري
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-[11px] text-slate-500 mt-0.5">
                   حساب تكلفة الشراء + نولي الشحن + الجمارك مقابل إيراد البيع المحقق (ج.م)
                 </p>
               </div>
               <Link
                 href="/finance"
-                className="text-xs text-amber-600 hover:underline font-bold flex items-center gap-1"
+                className="text-xs text-amber-600 hover:underline font-bold flex items-center gap-1 self-start sm:self-auto"
               >
                 التقارير المفصلة
                 <ChevronLeft size={14} />
               </Link>
             </div>
 
-            <div className="h-72 w-full pt-2">
+            <div className="h-64 sm:h-72 w-full pt-2">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={financialTrendData}>
                   <defs>
@@ -279,10 +262,10 @@ export default function DashboardPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" stroke="#64748b" fontSize={11} />
+                  <XAxis dataKey="month" stroke="#64748b" fontSize={10} />
                   <YAxis
                     stroke="#64748b"
-                    fontSize={11}
+                    fontSize={10}
                     tickFormatter={(val) => `${(val / 1000000).toFixed(1)}M`}
                   />
                   <Tooltip
@@ -307,7 +290,7 @@ export default function DashboardPage() {
                   <Area
                     type="monotone"
                     dataKey="netProfit"
-                    name="صافي الربح المحقق"
+                    name="صافي الربح"
                     stroke="#10b981"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -319,34 +302,34 @@ export default function DashboardPage() {
           </div>
 
           {/* ACTIVE IMPORT SHIPMENTS SUMMARY */}
-          <div className="glass-panel p-5 space-y-4">
+          <div className="glass-panel p-4 sm:p-5 space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
-                <Ship className="text-amber-600" size={18} />
+              <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+                <Ship className="text-amber-600" size={17} />
                 حركة الحاويات والاستيراد
               </h3>
-              <span className="text-[11px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded-md border border-amber-200">
+              <span className="text-[10px] bg-amber-50 text-amber-700 font-bold px-2 py-0.5 rounded-md border border-amber-200">
                 {shipments.length} حاويات
               </span>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {shipments.slice(0, 3).map((ship) => (
                 <div
                   key={ship.id}
-                  className="p-3 bg-slate-50 hover:bg-amber-50/40 rounded-xl border border-slate-200 transition space-y-2"
+                  className="p-3 bg-slate-50 hover:bg-amber-50/40 rounded-xl border border-slate-200 transition space-y-1.5"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-xs text-amber-700">
+                    <span className="font-mono font-bold text-xs text-amber-700 truncate">
                       {ship.containerNo}
                     </span>
                     <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${
                         ship.status === 'IN_WAREHOUSE'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          ? 'bg-emerald-100 text-emerald-800'
                           : ship.status === 'IN_TRANSIT'
-                          ? 'bg-sky-100 text-sky-800 border border-sky-200'
-                          : 'bg-amber-100 text-amber-800 border border-amber-200'
+                          ? 'bg-sky-100 text-sky-800'
+                          : 'bg-amber-100 text-amber-800'
                       }`}
                     >
                       {ship.status === 'IN_WAREHOUSE'
@@ -358,12 +341,12 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span>{ship.originCountry} ➔ {ship.destinationPort.split('-')[0]}</span>
-                    <span className="font-mono font-bold text-slate-700">{ship.totalVolumeM3} m³</span>
+                    <span className="truncate">{ship.originCountry} ➔ {ship.destinationPort.split('-')[0]}</span>
+                    <span className="font-mono font-bold text-slate-700 flex-shrink-0">{ship.totalVolumeM3} m³</span>
                   </div>
 
                   <div className="flex items-center justify-between text-xs pt-1.5 border-t border-slate-200/60 font-medium">
-                    <span className="text-slate-500">التكلفة الواصلة:</span>
+                    <span className="text-slate-500 text-[11px]">التكلفة الواصلة:</span>
                     <span className="font-mono font-bold text-emerald-700">
                       ${ship.grandTotalLandedUSD.toLocaleString()} USD
                     </span>
@@ -383,16 +366,16 @@ export default function DashboardPage() {
         </div>
 
         {/* RECENT INVOICES & QUICK NAVIGATION GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* RECENT SALES INVOICES TABLE */}
-          <div className="lg:col-span-2 glass-panel p-5 space-y-4">
+          <div className="lg:col-span-2 glass-panel p-4 sm:p-5 space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
-                  <Receipt className="text-amber-600" size={18} />
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-2">
+                  <Receipt className="text-amber-600" size={17} />
                   أحدث فواتير المبيعات والتوزيع
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-[11px] text-slate-500 mt-0.5">
                   فواتير البيع النقدي والآجل والأقساط والشيكات
                 </p>
               </div>
@@ -400,31 +383,31 @@ export default function DashboardPage() {
                 href="/sales"
                 className="text-xs text-amber-600 hover:underline font-bold flex items-center gap-1"
               >
-                عرض كل الفواتير
+                الكل
                 <ChevronLeft size={14} />
               </Link>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-right text-xs">
+              <table className="w-full text-right text-xs min-w-[500px]">
                 <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                   <tr>
-                    <th className="p-3">رقم الفاتورة</th>
-                    <th className="p-3">العميل</th>
-                    <th className="p-3">طريقة الدفع</th>
-                    <th className="p-3">الإجمالي</th>
-                    <th className="p-3">المتبقي (آجل)</th>
-                    <th className="p-3">التاريخ</th>
+                    <th className="p-2.5 sm:p-3">رقم الفاتورة</th>
+                    <th className="p-2.5 sm:p-3">العميل</th>
+                    <th className="p-2.5 sm:p-3">طريقة الدفع</th>
+                    <th className="p-2.5 sm:p-3">الإجمالي</th>
+                    <th className="p-2.5 sm:p-3">المتبقي</th>
+                    <th className="p-2.5 sm:p-3">التاريخ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {recentInvoices.map((inv) => (
                     <tr key={inv.id} className="hover:bg-slate-50">
-                      <td className="p-3 font-mono font-bold text-amber-700">{inv.invoiceNumber}</td>
-                      <td className="p-3 font-bold text-slate-800">
+                      <td className="p-2.5 sm:p-3 font-mono font-bold text-amber-700">{inv.invoiceNumber}</td>
+                      <td className="p-2.5 sm:p-3 font-bold text-slate-800">
                         <p className="truncate max-w-[140px]">{inv.customerName}</p>
                       </td>
-                      <td className="p-3">
+                      <td className="p-2.5 sm:p-3">
                         <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] border border-slate-200 font-bold">
                           {inv.paymentType === 'CASH'
                             ? 'نقدي'
@@ -435,10 +418,10 @@ export default function DashboardPage() {
                             : 'شيك'}
                         </span>
                       </td>
-                      <td className="p-3 font-mono font-bold text-slate-900">
+                      <td className="p-2.5 sm:p-3 font-mono font-bold text-slate-900">
                         {inv.totalAmount.toLocaleString()} {inv.currency}
                       </td>
-                      <td className="p-3 font-mono font-bold">
+                      <td className="p-2.5 sm:p-3 font-mono font-bold">
                         {inv.remainingAmount > 0 ? (
                           <span className="text-rose-600">
                             {inv.remainingAmount.toLocaleString()} {inv.currency}
@@ -447,7 +430,7 @@ export default function DashboardPage() {
                           <span className="text-emerald-600">مسدد بالكامل</span>
                         )}
                       </td>
-                      <td className="p-3 font-mono text-slate-500">{inv.date}</td>
+                      <td className="p-2.5 sm:p-3 font-mono text-slate-500">{inv.date}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -456,8 +439,8 @@ export default function DashboardPage() {
           </div>
 
           {/* QUICK LINKS HUB */}
-          <div className="glass-panel p-5 space-y-4">
-            <h3 className="font-extrabold text-sm text-slate-900 border-b border-slate-100 pb-3">
+          <div className="glass-panel p-4 sm:p-5 space-y-3 sm:space-y-4">
+            <h3 className="font-extrabold text-xs sm:text-sm text-slate-900 border-b border-slate-100 pb-3">
               روابط الوصول السريع
             </h3>
 
@@ -466,15 +449,15 @@ export default function DashboardPage() {
                 href="/inventory"
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-400 transition group"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-lg bg-sky-100 text-sky-700">
-                    <Boxes size={18} />
+                    <Boxes size={17} />
                   </div>
                   <div>
                     <p className="font-bold text-xs text-slate-800 group-hover:text-amber-700">
                       دليل المخزون والأسعار
                     </p>
-                    <p className="text-[11px] text-slate-500">تسعير USD / EGP / OMR</p>
+                    <p className="text-[10px] text-slate-500">تسعير USD / EGP / OMR</p>
                   </div>
                 </div>
                 <ChevronLeft size={16} className="text-slate-400 group-hover:text-amber-600" />
@@ -484,15 +467,15 @@ export default function DashboardPage() {
                 href="/fleet"
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-rose-400 transition group"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-lg bg-rose-100 text-rose-700">
-                    <Truck size={18} />
+                    <Truck size={17} />
                   </div>
                   <div>
                     <p className="font-bold text-xs text-slate-800 group-hover:text-rose-700">
                       حركة السيارات والعداد
                     </p>
-                    <p className="text-[11px] text-slate-500">إنذار تغيير الزيت كل 1500 كم</p>
+                    <p className="text-[10px] text-slate-500">إنذار تغيير الزيت 1500 كم</p>
                   </div>
                 </div>
                 <ChevronLeft size={16} className="text-slate-400 group-hover:text-rose-600" />
@@ -502,15 +485,15 @@ export default function DashboardPage() {
                 href="/customers"
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-amber-400 transition group"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
-                    <Users size={18} />
+                    <Users size={17} />
                   </div>
                   <div>
                     <p className="font-bold text-xs text-slate-800 group-hover:text-amber-700">
                       دليل العملاء والتحصيلات
                     </p>
-                    <p className="text-[11px] text-slate-500">أرصدة وخطوط سير التوزيع</p>
+                    <p className="text-[10px] text-slate-500">أرصدة وخطوط سير التوزيع</p>
                   </div>
                 </div>
                 <ChevronLeft size={16} className="text-slate-400 group-hover:text-amber-600" />
@@ -520,15 +503,15 @@ export default function DashboardPage() {
                 href="/finance"
                 className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-400 transition group"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
-                    <PieChart size={18} />
+                    <PieChart size={17} />
                   </div>
                   <div>
                     <p className="font-bold text-xs text-slate-800 group-hover:text-emerald-700">
                       التقارير وقائمة الدخل
                     </p>
-                    <p className="text-[11px] text-slate-500">أرباح الحاويات والأصناف</p>
+                    <p className="text-[10px] text-slate-500">أرباح الحاويات والأصناف</p>
                   </div>
                 </div>
                 <ChevronLeft size={16} className="text-slate-400 group-hover:text-emerald-600" />
